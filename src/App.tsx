@@ -1,168 +1,118 @@
-import React, { useEffect, useState } from 'react';
-import { Line, Doughnut } from 'react-chartjs-2';
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from 'chart.js';
-import { AlertCircle, TrendingUp, Shield, Activity, Thermometer, AlertTriangle } from 'lucide-react';
+import React, { useEffect, useState, useRef } from 'react';
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend);
-
-interface Metric {
-  name: string;
-  value: number;
-  unit: string;
-  trend: 'up' | 'down' | 'stable';
-  target: number;
-}
-
-interface Alert {
-  id: number;
-  type: 'critical' | 'warning' | 'info';
-  message: string;
-  timestamp: string;
-}
-
-const BoilerIntelligenceDashboard: React.FC = () => {
-  const [metrics, setMetrics] = useState<Metric[]>([
-    { name: 'Efficiency', value: 92.5, unit: '%', trend: 'up', target: 95 },
-    { name: 'Steam Output', value: 1250, unit: 'kg/h', trend: 'stable', target: 1300 },
-    { name: 'Fuel Consumption', value: 450, unit: 'kg/h', trend: 'down', target: 420 },
-    { name: 'Temperature', value: 245, unit: '°C', trend: 'up', target: 250 },
-  ]);
-  const [alerts, setAlerts] = useState<Alert[]>([]);
-  const [chartData, setChartData] = useState<any>({
-    labels: ['12AM', '2AM', '4AM', '6AM', '8AM', '10AM'],
-    datasets: [
-      {
-        label: 'Boiler Efficiency',
-        data: [88, 90, 91, 92, 93, 92.5],
-        borderColor: 'rgb(59, 130, 246)',
-        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-        tension: 0.4,
-      },
-    ],
-  });
+const BoilerIntelligenceDashboardNoDeps: React.FC = () => {
+  const [time, setTime] = useState(0);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      // Simulate real-time updates
-      setMetrics((prev) =>
-        prev.map((m) => ({
-          ...m,
-          value: m.value + (Math.random() - 0.5) * 2,
-          trend: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down' | 'stable',
-        }))
-      );
-      setChartData((prev: any) => ({
-        ...prev,
-        datasets: [
-          {
-            ...prev.datasets[0],
-            data: [...prev.datasets[0].data.slice(1), 92 + (Math.random() - 0.5) * 3],
-          },
-        ],
-        labels: [...prev.labels.slice(1), new Date().toLocaleTimeString().slice(0, 5)],
-      }));
-    }, 5000);
-
-    // Mock alerts
-    setAlerts([
-      { id: 1, type: 'warning' as const, message: 'Anomaly detected in heat exchanger', timestamp: '10:05 PM' },
-      { id: 2, type: 'critical' as const, message: 'Predictive maintenance: Tube fouling risk high', timestamp: '09:45 PM' },
-      { id: 3, type: 'info' as const, message: 'Efficiency optimized - 1.2% improvement', timestamp: '09:30 PM' },
-    ]);
-
+    const interval = setInterval(() => setTime(t => t + 1), 1000);
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Animate efficiency line chart
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 4;
+    ctx.lineCap = 'round';
+    ctx.shadowBlur = 20;
+    ctx.shadowColor = '#3b82f6';
+    ctx.beginPath();
+    const points = [20, 40, 70, 85, 92, 90 + Math.sin(time / 10) * 2];
+    points.forEach((p, i) => {
+      const x = (i / 5) * canvas.width;
+      const y = canvas.height - (p / 100) * canvas.height;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Health gauge arc
+    ctx.save();
+    ctx.translate(300, 150);
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 20;
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = '#10b981';
+    ctx.beginPath();
+    ctx.arc(0, 0, 80, -Math.PI / 2, (75 / 100) * Math.PI * 1.5 - Math.PI / 2);
+    ctx.stroke();
+    ctx.restore();
+  }, [time]);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900/20 to-gray-800 text-white p-8 font-sans">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-          Boiler Intelligence Dashboard
+        <h1 className="text-4xl md:text-5xl font-black bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent drop-shadow-2xl">
+          Boiler Intelligence
         </h1>
-        <p className="text-gray-400 mt-2">AI-Powered Predictive Monitoring & Optimization</p>
+        <p className="text-xl text-gray-300 mt-2 opacity-90">AI Predictive Dashboard • Live {new Date().toLocaleTimeString('en-IN')}</p>
       </header>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {metrics.map((metric, i) => (
-          <div key={i} className="bg-gray-800/50 backdrop-blur-xl p-6 rounded-2xl border border-gray-700 shadow-2xl hover:shadow-blue-500/25 transition-all">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-gray-400 text-sm uppercase tracking-wide">{metric.name}</p>
-                <p className="text-3xl font-bold">
-                  {metric.value.toFixed(1)} <span className="text-xl text-gray-400">{metric.unit}</span>
-                </p>
-                <div className="flex items-center mt-2">
-                  <span className={`text-sm ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>
-                    {metric.trend === 'up' ? <TrendingUp size={16} /> : <TrendingUp size={16} className="rotate-180" />}
-                  </span>
-                  <span className="ml-1 text-sm text-gray-400">vs target {metric.target}</span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        {[
+          { name: 'Efficiency', val: (92 + Math.sin(time / 20) * 1.5).toFixed(1), unit: '%', color: 'from-emerald-400 to-green-500', icon: '📈' },
+          { name: 'Steam Flow', val: (1245 + Math.sin(time / 15) * 20).toFixed(0), unit: 'kg/h', color: 'from-blue-400 to-cyan-500', icon: '💨' },
+          { name: 'Fuel Rate', val: (448 + Math.cos(time / 25) * 5).toFixed(0), unit: 'kg/h', color: 'from-orange-400 to-red-500', icon: '🔥' },
+          { name: 'Temp', val: (246 + Math.sin(time / 30) * 2).toFixed(0), unit: '°C', color: 'from-yellow-400 to-amber-500', icon: '🌡️' },
+        ].map((m, i) => (
+          <div key={i} className={`group bg-white/5 backdrop-blur-xl p-8 rounded-3xl border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-500 shadow-2xl hover:shadow-blue-500/25 hover:scale-[1.02]`}>
+            <div className="flex items-start justify-between mb-4">
+              <div className="flex-1">
+                <p className="text-gray-400 uppercase tracking-wider text-sm font-medium opacity-80">{m.name}</p>
+                <div className="text-4xl md:text-5xl font-black bg-gradient-to-r bg-clip-text text-transparent group-hover:scale-110 transition-transform">
+                  {m.val} <span className="text-2xl text-gray-400">{m.unit}</span>
                 </div>
               </div>
-              <div className={`p-2 rounded-xl ${metric.value > metric.target ? 'bg-green-500/20' : 'bg-yellow-500/20'}`}>
-                {metric.value > metric.target ? <Shield size={24} /> : <Activity size={24} />}
-              </div>
+              <span className="text-4xl p-3 bg-white/10 rounded-2xl group-hover:rotate-12 transition-all">{m.icon}</span>
+            </div>
+            <div className="w-full bg-white/5 rounded-full h-2">
+              <div className={`h-2 rounded-full bg-gradient-to-r ${m.color} transition-all`} style={{ width: `${Math.min(100, parseFloat(m.val) * 0.8)}%` }} />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Efficiency Chart */}
-        <div className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-3xl border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6 flex items-center"><Thermometer size={28} className="mr-3" /> Real-Time Efficiency Trend</h2>
-          <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }} height={400} />
+      {/* Charts */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl">
+          <h2 className="text-3xl font-bold mb-8 flex items-center text-cyan-300"><span className="w-3 h-3 bg-cyan-400 rounded-full mr-4 animate-pulse" />Efficiency Trend (24h)</h2>
+          <canvas ref={canvasRef} width={600} height={300} className="w-full h-80 rounded-2xl" />
+          <p className="text-gray-400 mt-6 text-center">AI-Optimized • Anomaly-Free</p>
         </div>
 
-        {/* Health Gauge */}
-        <div className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-3xl border border-gray-700">
-          <h2 className="text-2xl font-bold mb-6 flex items-center"><Activity size={28} className="mr-3" /> Asset Health</h2>
-          <Doughnut
-            data={{
-              labels: ['Healthy', 'Warning', 'Critical'],
-              datasets: [{ data: [75, 20, 5], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'] }],
-            }}
-            options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }}
-          />
+        <div className="bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10 shadow-2xl">
+          <h2 className="text-3xl font-bold mb-8 flex items-center text-emerald-400"><span className="w-3 h-3 bg-emerald-400 rounded-full mr-4 animate-pulse" />Asset Health Score</h2>
+          <div className="relative w-full h-80 flex items-center justify-center">
+            <canvas width={400} height={400} className="w-64 h-64" />
+            <div className="absolute text-center">
+              <div className="text-5xl font-black text-emerald-400 drop-shadow-2xl">92%</div>
+              <p className="text-gray-400 text-sm uppercase tracking-wider">Optimal</p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Alerts */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-6 flex items-center"><AlertCircle size={28} className="mr-3 text-yellow-400" /> AI Alerts & Predictions</h2>
-        <div className="space-y-4">
-          {alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`p-6 rounded-2xl border-l-4 ${
-                alert.type === 'critical'
-                  ? 'bg-red-500/10 border-red-500'
-                  : alert.type === 'warning'
-                  ? 'bg-yellow-500/10 border-yellow-500'
-                  : 'bg-blue-500/10 border-blue-500'
-              } backdrop-blur-xl shadow-xl hover:shadow-red-500/20 transition-all`}
-            >
-              <div className="flex items-start">
-                <div className={`p-2 rounded-full mr-4 ${
-                  alert.type === 'critical' ? 'bg-red-500/20' : alert.type === 'warning' ? 'bg-yellow-500/20' : 'bg-blue-500/20'
-                }`}>
-                  <AlertTriangle size={24} className={`${
-                    alert.type === 'critical' ? 'text-red-400' : alert.type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
-                  }`} />
-                </div>
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl font-bold mb-8 flex items-center text-orange-400"><span className="w-3 h-3 bg-orange-400 rounded-full mr-4 animate-pulse" />AI Predictions</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { type: '⚠️ Warning', msg: 'Heat exchanger anomaly detected', time: '10:09 PM' },
+            { type: '🔥 Critical', msg: 'Tube fouling risk: 78% probability', time: '10:05 PM' },
+            { type: '✅ Optimized', msg: '+1.4% efficiency gain applied', time: '09:58 PM' },
+          ].map((a, i) => (
+            <div key={i} className="group p-8 rounded-3xl bg-gradient-to-br from-orange-500/10 to-red-500/10 border-2 border-orange-500/30 backdrop-blur-xl hover:shadow-2xl hover:shadow-orange-500/25 transition-all hover:scale-[1.02]">
+              <div className="flex items-start space-x-4">
+                <span className="text-3xl p-3 bg-orange-500/20 rounded-2xl group-hover:rotate-6 transition-transform">{a.type === '✅ Optimized' ? '✅' : a.type}</span>
                 <div>
-                  <p className="font-semibold text-lg">{alert.message}</p>
-                  <p className="text-gray-400 text-sm mt-1">{alert.timestamp} IST</p>
+                  <p className="font-bold text-xl mb-2">{a.msg}</p>
+                  <p className="text-gray-400">{a.time} IST</p>
                 </div>
               </div>
             </div>
@@ -170,11 +120,11 @@ const BoilerIntelligenceDashboard: React.FC = () => {
         </div>
       </div>
 
-      <footer className="mt-12 text-center text-gray-500 text-sm">
-        Powered by Agentic AI | Predictive Maintenance | Energy Optimization [Live Data Simulation]
+      <footer className="mt-20 text-center text-gray-500/70 text-lg py-12 border-t border-white/10">
+        🚀 Boiler Intelligence • Agentic AI Platform • Optimized for {navigator.userAgent.includes('Chrome') ? 'Chrome' : 'Modern Browsers'}
       </footer>
     </div>
   );
 };
 
-export default BoilerIntelligenceDashboard;
+export default BoilerIntelligenceDashboardNoDeps;

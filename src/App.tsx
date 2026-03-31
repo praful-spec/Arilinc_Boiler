@@ -1,176 +1,180 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from 'react';
+import { Line, Doughnut } from 'react-chartjs-2';
 import {
-  LineChart,
-  Line,
-  AreaChart,
-  Area,
-  XAxis,
-  YAxis,
-  CartesianGrid,
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Title,
   Tooltip,
-  ResponsiveContainer,
-  ReferenceLine,
-} from "recharts";
+  Legend,
+} from 'chart.js';
+import { AlertCircle, TrendingUp, Shield, Activity, Thermometer, AlertTriangle } from 'lucide-react';
 
-// ── Synthetic Boiler Data ─────────────────────────────
-const generateBoilerData = () => {
-  const data = [];
-  for (let i = 0; i < 72; i++) {
-    const anomaly = i > 45;
-    const critical = i > 60;
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend);
 
-    const efficiency =
-      85 -
-      (anomaly ? (i - 45) * 0.6 : 0) -
-      Math.random() * 1.2;
+interface Metric {
+  name: string;
+  value: number;
+  unit: string;
+  trend: 'up' | 'down' | 'stable';
+  target: number;
+}
 
-    data.push({
-      hour: `${Math.floor(i / 24)}d ${i % 24}h`,
-      temperature: +(220 + Math.sin(i * 0.2) * 8 + (anomaly ? (i - 45) * 1.5 : 0)).toFixed(1),
-      pressure: +(12 + Math.cos(i * 0.15) * 0.8 - (anomaly ? (i - 45) * 0.05 : 0)).toFixed(2),
-      efficiency: +efficiency.toFixed(1),
-      oxygen: +(5 + (anomaly ? (i - 45) * 0.15 : 0)).toFixed(2),
-      status: critical ? "critical" : anomaly ? "warning" : "normal",
-    });
-  }
-  return data;
-};
+interface Alert {
+  id: number;
+  type: 'critical' | 'warning' | 'info';
+  message: string;
+  timestamp: string;
+}
 
-const data = generateBoilerData();
+const BoilerIntelligenceDashboard: React.FC = () => {
+  const [metrics, setMetrics] = useState<Metric[]>([
+    { name: 'Efficiency', value: 92.5, unit: '%', trend: 'up', target: 95 },
+    { name: 'Steam Output', value: 1250, unit: 'kg/h', trend: 'stable', target: 1300 },
+    { name: 'Fuel Consumption', value: 450, unit: 'kg/h', trend: 'down', target: 420 },
+    { name: 'Temperature', value: 245, unit: '°C', trend: 'up', target: 250 },
+  ]);
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [chartData, setChartData] = useState<any>({
+    labels: ['12AM', '2AM', '4AM', '6AM', '8AM', '10AM'],
+    datasets: [
+      {
+        label: 'Boiler Efficiency',
+        data: [88, 90, 91, 92, 93, 92.5],
+        borderColor: 'rgb(59, 130, 246)',
+        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+        tension: 0.4,
+      },
+    ],
+  });
 
-// ── KPI Calculation ─────────────────────────────
-const latest = data[data.length - 1];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate real-time updates
+      setMetrics((prev) =>
+        prev.map((m) => ({
+          ...m,
+          value: m.value + (Math.random() - 0.5) * 2,
+          trend: (Math.random() > 0.5 ? 'up' : 'down') as 'up' | 'down' | 'stable',
+        }))
+      );
+      setChartData((prev: any) => ({
+        ...prev,
+        datasets: [
+          {
+            ...prev.datasets[0],
+            data: [...prev.datasets[0].data.slice(1), 92 + (Math.random() - 0.5) * 3],
+          },
+        ],
+        labels: [...prev.labels.slice(1), new Date().toLocaleTimeString().slice(0, 5)],
+      }));
+    }, 5000);
 
-const fuelLoss = ((85 - latest.efficiency) * 12000).toFixed(0); // ₹ logic
-const savings = Math.max(0, fuelLoss * 0.7);
+    // Mock alerts
+    setAlerts([
+      { id: 1, type: 'warning' as const, message: 'Anomaly detected in heat exchanger', timestamp: '10:05 PM' },
+      { id: 2, type: 'critical' as const, message: 'Predictive maintenance: Tube fouling risk high', timestamp: '09:45 PM' },
+      { id: 3, type: 'info' as const, message: 'Efficiency optimized - 1.2% improvement', timestamp: '09:30 PM' },
+    ]);
 
-// ── Component ─────────────────────────────
-export default function BoilerAI() {
-  const [agentMsgs, setAgentMsgs] = useState([]);
-  const [running, setRunning] = useState(false);
-
-  const runAgent = () => {
-    setRunning(true);
-    setAgentMsgs([]);
-
-    const msgs = [
-      "🔍 Observing boiler signals...",
-      `📊 Efficiency dropped to ${latest.efficiency}%`,
-      `🔥 Oxygen rising to ${latest.oxygen}% → combustion imbalance`,
-      "🧠 Matched with historical combustion inefficiency patterns",
-      "⚡ Fuel loss estimated from efficiency degradation",
-      `✅ Recommendation: Optimize air-fuel ratio → Save ₹${(savings / 1000).toFixed(1)}K/month`,
-    ];
-
-    let i = 0;
-    const iv = setInterval(() => {
-      setAgentMsgs((p) => [...p, msgs[i]]);
-      i++;
-      if (i >= msgs.length) {
-        clearInterval(iv);
-        setRunning(false);
-      }
-    }, 800);
-  };
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div style={{ padding: 24, background: "#f8fafc", minHeight: "100vh", fontFamily: "Inter, sans-serif" }}>
-      
-      {/* HEADER */}
-      <div style={{ marginBottom: 20 }}>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "#1d4ed8" }}>
-          Boiler Intelligence — Agentic AI
-        </div>
-        <div style={{ color: "#64748b", fontSize: 13 }}>
-          Combustion · Efficiency · Fuel Optimization
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8 font-sans">
+      <header className="mb-8">
+        <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+          Boiler Intelligence Dashboard
+        </h1>
+        <p className="text-gray-400 mt-2">AI-Powered Predictive Monitoring & Optimization</p>
+      </header>
 
-      {/* KPI ROW */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 20 }}>
-        {[
-          { label: "Efficiency", value: `${latest.efficiency}%`, color: "#1d4ed8" },
-          { label: "Temperature", value: `${latest.temperature}°C`, color: "#ef4444" },
-          { label: "Pressure", value: `${latest.pressure} bar`, color: "#0891b2" },
-          { label: "Fuel Loss", value: `₹${(fuelLoss / 1000).toFixed(1)}K`, color: "#d97706" },
-        ].map((k, i) => (
-          <div key={i} style={{ background: "#fff", padding: 16, borderRadius: 10, border: "1px solid #e2e8f0" }}>
-            <div style={{ fontSize: 12, color: "#64748b" }}>{k.label}</div>
-            <div style={{ fontSize: 20, fontWeight: 800, color: k.color }}>{k.value}</div>
+      {/* KPIs */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {metrics.map((metric, i) => (
+          <div key={i} className="bg-gray-800/50 backdrop-blur-xl p-6 rounded-2xl border border-gray-700 shadow-2xl hover:shadow-blue-500/25 transition-all">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-gray-400 text-sm uppercase tracking-wide">{metric.name}</p>
+                <p className="text-3xl font-bold">
+                  {metric.value.toFixed(1)} <span className="text-xl text-gray-400">{metric.unit}</span>
+                </p>
+                <div className="flex items-center mt-2">
+                  <span className={`text-sm ${metric.trend === 'up' ? 'text-green-400' : 'text-red-400'}`}>
+                    {metric.trend === 'up' ? <TrendingUp size={16} /> : <TrendingUp size={16} className="rotate-180" />}
+                  </span>
+                  <span className="ml-1 text-sm text-gray-400">vs target {metric.target}</span>
+                </div>
+              </div>
+              <div className={`p-2 rounded-xl ${metric.value > metric.target ? 'bg-green-500/20' : 'bg-yellow-500/20'}`}>
+                {metric.value > metric.target ? <Shield size={24} /> : <Activity size={24} />}
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* CHARTS */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 20 }}>
-        
-        {/* Efficiency */}
-        <div style={{ background: "#fff", padding: 16, borderRadius: 10 }}>
-          <div style={{ fontWeight: 700, marginBottom: 10 }}>Efficiency (%)</div>
-          <ResponsiveContainer width="100%" height={200}>
-            <AreaChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="hour" />
-              <YAxis />
-              <Tooltip />
-              <ReferenceLine y={75} stroke="#ef4444" />
-              <Area type="monotone" dataKey="efficiency" stroke="#1d4ed8" fill="#dbeafe" />
-            </AreaChart>
-          </ResponsiveContainer>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* Efficiency Chart */}
+        <div className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-3xl border border-gray-700">
+          <h2 className="text-2xl font-bold mb-6 flex items-center"><Thermometer size={28} className="mr-3" /> Real-Time Efficiency Trend</h2>
+          <Line data={chartData} options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } } }} height={400} />
         </div>
 
-        {/* Temperature */}
-        <div style={{ background: "#fff", padding: 16, borderRadius: 10 }}>
-          <div style={{ fontWeight: 700, marginBottom: 10 }}>Temperature (°C)</div>
-          <ResponsiveContainer width="100%" height={200}>
-            <LineChart data={data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-              <XAxis dataKey="hour" />
-              <YAxis />
-              <Tooltip />
-              <Line type="monotone" dataKey="temperature" stroke="#ef4444" strokeWidth={2} />
-            </LineChart>
-          </ResponsiveContainer>
+        {/* Health Gauge */}
+        <div className="bg-gray-800/50 backdrop-blur-xl p-8 rounded-3xl border border-gray-700">
+          <h2 className="text-2xl font-bold mb-6 flex items-center"><Activity size={28} className="mr-3" /> Asset Health</h2>
+          <Doughnut
+            data={{
+              labels: ['Healthy', 'Warning', 'Critical'],
+              datasets: [{ data: [75, 20, 5], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'] }],
+            }}
+            options={{ responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }}
+          />
         </div>
       </div>
 
-      {/* AI AGENT */}
-      <div style={{ background: "#fff", padding: 20, borderRadius: 10 }}>
-        <div style={{ fontWeight: 800, marginBottom: 10 }}>
-          🤖 AI Agent — Combustion Intelligence
+      {/* Alerts */}
+      <div className="mt-12">
+        <h2 className="text-2xl font-bold mb-6 flex items-center"><AlertCircle size={28} className="mr-3 text-yellow-400" /> AI Alerts & Predictions</h2>
+        <div className="space-y-4">
+          {alerts.map((alert) => (
+            <div
+              key={alert.id}
+              className={`p-6 rounded-2xl border-l-4 ${
+                alert.type === 'critical'
+                  ? 'bg-red-500/10 border-red-500'
+                  : alert.type === 'warning'
+                  ? 'bg-yellow-500/10 border-yellow-500'
+                  : 'bg-blue-500/10 border-blue-500'
+              } backdrop-blur-xl shadow-xl hover:shadow-red-500/20 transition-all`}
+            >
+              <div className="flex items-start">
+                <div className={`p-2 rounded-full mr-4 ${
+                  alert.type === 'critical' ? 'bg-red-500/20' : alert.type === 'warning' ? 'bg-yellow-500/20' : 'bg-blue-500/20'
+                }`}>
+                  <AlertTriangle size={24} className={`${
+                    alert.type === 'critical' ? 'text-red-400' : alert.type === 'warning' ? 'text-yellow-400' : 'text-blue-400'
+                  }`} />
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">{alert.message}</p>
+                  <p className="text-gray-400 text-sm mt-1">{alert.timestamp} IST</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-
-        <button
-          onClick={runAgent}
-          disabled={running}
-          style={{
-            background: "linear-gradient(135deg,#1d4ed8,#0891b2)",
-            color: "#fff",
-            padding: "10px 18px",
-            borderRadius: 8,
-            border: "none",
-            cursor: "pointer",
-            marginBottom: 14,
-          }}
-        >
-          {running ? "Running..." : "Run AI Agent"}
-        </button>
-
-        {agentMsgs.map((m, i) => (
-          <div key={i} style={{ fontSize: 13, marginBottom: 6 }}>
-            {m}
-          </div>
-        ))}
-
-        {/* FINAL INSIGHT */}
-        {!running && agentMsgs.length > 0 && (
-          <div style={{ marginTop: 12, padding: 12, background: "#eff6ff", borderRadius: 8 }}>
-            <strong>🔥 Key Insight:</strong> Combustion inefficiency detected  
-            <br />
-            <strong>💰 Value:</strong> ₹{(savings / 1000).toFixed(1)}K/month saving potential
-          </div>
-        )}
       </div>
+
+      <footer className="mt-12 text-center text-gray-500 text-sm">
+        Powered by Agentic AI | Predictive Maintenance | Energy Optimization [Live Data Simulation]
+      </footer>
     </div>
   );
-}
+};
+
+export default BoilerIntelligenceDashboard;

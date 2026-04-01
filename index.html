@@ -1,14 +1,1174 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="theme-color" content="#000000" />
-    <title>AriLinc | Boiler Intelligence </title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AriLinc — Boiler Intelligence Platform</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* AriLinc Dark Navy Sidebar */
+  --navy:#0D1B2E;
+  --navy2:#152237;
+  --navy3:#1C2E45;
+  --navy-border:rgba(255,255,255,0.08);
+  --navy-text:rgba(255,255,255,0.55);
+  --navy-text-active:#ffffff;
+
+  /* AriLinc Main Area */
+  --bg:#F0F4F8;
+  --surface:#ffffff;
+  --surface2:#F5F7FA;
+  --border:rgba(0,0,0,0.09);
+  --border2:rgba(0,0,0,0.05);
+  --text:#111827;
+  --text2:#4B5563;
+  --text3:#9CA3AF;
+
+  /* AriLinc Accent — Teal/Cyan */
+  --teal:#0097A7;
+  --teal-light:#00BCD4;
+  --teal-bg:#E0F7FA;
+  --teal-glow:rgba(0,188,212,0.15);
+
+  /* AriLinc Orange highlight */
+  --orange:#F57C00;
+  --orange-light:#FF9800;
+  --orange-bg:#FFF3E0;
+
+  /* Semantic */
+  --green:#2E7D32;--green-bg:#E8F5E9;
+  --amber:#E65100;--amber-bg:#FFF3E0;--amber-mid:#FF9800;
+  --red:#C62828;--red-bg:#FFEBEE;--red-mid:#EF5350;
+  --blue:#1565C0;--blue-bg:#E3F2FD;
+
+  --radius:6px;--radius-lg:10px;
+  --sidebar:230px;
+
+  /* Topbar height reference */
+  --topbar-h:52px;
+}
+
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);font-size:13px;display:flex;height:100vh;overflow:hidden}
+
+/* ══════════════════════════════════════
+   SIDEBAR — AriLinc dark navy
+══════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:var(--navy);
+  display:flex;flex-direction:column;overflow:hidden;
+  position:relative;
+}
+/* subtle vertical line accent on left edge */
+.sidebar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--teal-light),var(--orange))}
+
+.logo-wrap{padding:18px 16px 14px;border-bottom:1px solid var(--navy-border)}
+.logo-mark{display:flex;align-items:center;gap:10px}
+.logo-icon{width:32px;height:32px;background:var(--teal-light);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.logo-icon svg{width:18px;height:18px;fill:none;stroke:#fff;stroke-width:2}
+.logo-name{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.logo-tag{font-size:9.5px;color:var(--teal-light);margin-top:2px;font-weight:500;letter-spacing:.8px;text-transform:uppercase}
+
+.nav-section{
+  font-size:9.5px;font-weight:700;color:var(--navy-text);
+  letter-spacing:1px;text-transform:uppercase;
+  padding:18px 16px 6px
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:8px 14px;margin:1px 8px;
+  border-radius:var(--radius);cursor:pointer;
+  font-size:12.5px;font-weight:500;color:var(--navy-text);
+  transition:all .15s;position:relative
+}
+.nav-item:hover{background:var(--navy3);color:#fff}
+.nav-item.active{
+  background:var(--teal-glow);
+  color:var(--teal-light);
+  border-left:2px solid var(--teal-light);
+  padding-left:12px
+}
+.nav-item svg{width:15px;height:15px;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;font-size:10px;padding:1px 7px;
+  border-radius:10px;font-weight:700
+}
+.badge-teal{background:rgba(0,188,212,0.2);color:var(--teal-light)}
+.badge-red{background:rgba(239,83,80,0.2);color:#EF5350}
+.badge-amber{background:rgba(255,152,0,0.2);color:#FF9800}
+
+.plant-footer{margin-top:auto;padding:14px;border-top:1px solid var(--navy-border)}
+.plant-label{font-size:9.5px;color:var(--navy-text);margin-bottom:7px;text-transform:uppercase;letter-spacing:.7px;font-weight:600}
+.plant-select{
+  width:100%;padding:7px 10px;
+  border:1px solid var(--navy-border);border-radius:var(--radius);
+  background:var(--navy3);font-size:12px;color:#fff;
+  cursor:pointer;outline:none
+}
+.plant-select option{background:var(--navy2)}
+
+/* ══════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════ */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--bg)}
+.topbar{
+  display:flex;align-items:center;gap:14px;
+  padding:0 22px;height:var(--topbar-h);
+  border-bottom:1px solid var(--border);
+  background:var(--surface);flex-shrink:0
+}
+/* AriLinc-style teal left accent on topbar */
+.topbar-accent{
+  width:4px;height:28px;border-radius:2px;
+  background:linear-gradient(180deg,var(--teal-light),var(--teal));
+  flex-shrink:0
+}
+.page-title{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.2px}
+.page-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:8px}
+
+.date-range-wrap{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 11px;border:1px solid var(--border);
+  border-radius:var(--radius);background:var(--surface);
+  font-size:12px;color:var(--text2)
+}
+.date-range-wrap input[type=month]{
+  border:none;background:transparent;font-size:12px;
+  color:var(--text);outline:none;cursor:pointer;width:115px;
+  font-family:'Inter',sans-serif
+}
+.date-sep{color:var(--text3)}
+
+.topbar-btn{
+  display:flex;align-items:center;gap:5px;
+  padding:6px 12px;border:1px solid var(--border);
+  border-radius:var(--radius);background:var(--surface);
+  font-size:12px;font-weight:500;color:var(--text2);cursor:pointer;
+  font-family:'Inter',sans-serif;transition:all .15s
+}
+.topbar-btn:hover{background:var(--surface2);color:var(--text)}
+.topbar-btn.primary{
+  background:var(--teal);color:#fff;border-color:var(--teal)
+}
+.topbar-btn.primary:hover{background:var(--teal-light)}
+
+/* Live pulse dot */
+.live-dot{
+  width:7px;height:7px;border-radius:50%;background:#4CAF50;
+  display:inline-block;margin-right:5px;
+  animation:pulse 2s infinite
+}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(1.2)}}
+
+/* ══════════════════════════════════════
+   TABS — AriLinc teal underline style
+══════════════════════════════════════ */
+.tabs{
+  display:flex;padding:0 22px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);flex-shrink:0;gap:0
+}
+.tab{
+  font-size:12.5px;font-weight:500;
+  padding:10px 14px;cursor:pointer;
+  color:var(--text3);border-bottom:2px solid transparent;
+  margin-bottom:-1px;white-space:nowrap;transition:all .15s
+}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal);font-weight:600}
+.tab:hover:not(.active){color:var(--text)}
+
+/* ══════════════════════════════════════
+   CONTENT
+══════════════════════════════════════ */
+.content{flex:1;overflow-y:auto;padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+
+/* ══════════════════════════════════════
+   KPI CARDS — AriLinc style with teal top-border accent
+══════════════════════════════════════ */
+.kpi-grid{display:grid;gap:10px}
+.kpi-grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi-grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+
+.kpi-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:14px 16px;
+  border-top:3px solid var(--teal);
+  position:relative;overflow:hidden
+}
+.kpi-card.orange{border-top-color:var(--orange)}
+.kpi-card.green{border-top-color:#4CAF50}
+.kpi-card.red{border-top-color:var(--red-mid)}
+
+.kpi-label{font-size:10.5px;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;font-weight:600}
+.kpi-val{font-size:22px;font-weight:700;color:var(--text);line-height:1;letter-spacing:-.5px}
+.kpi-delta{font-size:11px;margin-top:5px;display:flex;align-items:center;gap:3px;font-weight:500}
+.up{color:var(--green)}.down{color:var(--red)}.neutral{color:var(--text3)}
+
+/* ══════════════════════════════════════
+   PANELS
+══════════════════════════════════════ */
+.panel{display:none;flex-direction:column;gap:14px}
+.panel.active{display:flex}
+
+/* ══════════════════════════════════════
+   CHART CARDS
+══════════════════════════════════════ */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius-lg);
+  padding:16px
+}
+.card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--text)}
+.card-meta{font-size:11px;color:var(--text3);margin-top:2px}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:11px;color:var(--text3)}
+.leg-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.leg-item{display:flex;align-items:center;gap:5px;font-weight:500}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3-1{display:grid;grid-template-columns:3fr 2fr;gap:14px}
+.grid-2-1{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+
+/* ══════════════════════════════════════
+   SECTION HEADER — AriLinc style
+══════════════════════════════════════ */
+.section-hd{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:700;color:var(--text);
+  text-transform:uppercase;letter-spacing:.6px
+}
+.section-hd::before{
+  content:'';width:3px;height:14px;border-radius:2px;
+  background:var(--teal)
+}
+
+/* ══════════════════════════════════════
+   TABLES
+══════════════════════════════════════ */
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{
+  text-align:left;font-size:10.5px;font-weight:700;
+  color:var(--text3);padding:6px 10px 8px;
+  border-bottom:1px solid var(--border);
+  text-transform:uppercase;letter-spacing:.5px;
+  background:var(--surface2)
+}
+.data-table td{padding:9px 10px;border-bottom:1px solid var(--border2);color:var(--text);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:var(--surface2)}
+
+.badge{display:inline-flex;align-items:center;font-size:10.5px;padding:2px 8px;border-radius:4px;font-weight:600;white-space:nowrap}
+.badge-fuel{background:var(--orange-bg);color:var(--orange)}
+.badge-maint{background:var(--teal-bg);color:var(--teal)}
+.badge-emis{background:var(--green-bg);color:var(--green)}
+.badge-down{background:var(--red-bg);color:var(--red)}
+.badge-ok{background:var(--green-bg);color:var(--green)}
+.badge-warn{background:var(--amber-bg);color:var(--amber)}
+.badge-crit{background:var(--red-bg);color:var(--red)}
+.badge-info{background:var(--teal-bg);color:var(--teal)}
+
+.bar-wrap{display:flex;align-items:center;gap:7px}
+.bar-bg{flex:1;height:5px;background:var(--surface2);border-radius:3px;overflow:hidden;min-width:60px}
+.bar-fill{height:100%;border-radius:3px}
+
+/* ══════════════════════════════════════
+   LIVE MONITORING GRID
+══════════════════════════════════════ */
+.live-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+
+.boiler-tile{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:13px;cursor:pointer;
+  transition:all .15s;border-top:3px solid var(--border)
+}
+.boiler-tile:hover{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal)}
+.boiler-tile.selected{border-color:var(--teal);box-shadow:0 0 0 2px var(--teal)}
+.boiler-tile.st-ok{border-top-color:#4CAF50}
+.boiler-tile.st-warn{border-top-color:#FF9800}
+.boiler-tile.st-crit{border-top-color:#EF5350}
+.boiler-tile.st-off{border-top-color:#9E9E9E;opacity:.7}
+
+.tile-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.tile-id{font-size:12.5px;font-weight:700;color:var(--text)}
+.tile-status-dot{width:8px;height:8px;border-radius:50%}
+.tile-stat{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.4px;margin-bottom:1px}
+.tile-val{font-size:15px;font-weight:700;color:var(--text)}
+.tile-row{margin-top:7px}
+.tile-eff{
+  font-size:11px;font-weight:600;margin-top:9px;
+  padding:3px 9px;border-radius:4px;display:inline-block
+}
+
+/* ══════════════════════════════════════
+   ALERTS
+══════════════════════════════════════ */
+.alert-row{
+  display:flex;align-items:flex-start;gap:13px;
+  padding:14px 16px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);margin-bottom:8px;
+  border-left:4px solid transparent;transition:background .15s
+}
+.alert-row.sev-critical{border-left-color:var(--red-mid)}
+.alert-row.sev-warning{border-left-color:#FF9800}
+.alert-row.sev-info{border-left-color:var(--teal-light)}
+.alert-row:hover{background:var(--surface2)}
+.alert-icon{width:34px;height:34px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.alert-icon svg{width:16px;height:16px}
+.alert-title{font-size:13px;font-weight:600;color:var(--text)}
+.alert-desc{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5}
+.alert-meta{font-size:11px;color:var(--text3);margin-top:5px;display:flex;align-items:center;gap:10px;font-weight:500}
+.alert-actions{margin-left:auto;display:flex;flex-direction:column;gap:5px;align-items:flex-end;flex-shrink:0}
+
+.btn-sm{
+  font-size:11px;padding:5px 11px;
+  border:1px solid var(--border);border-radius:var(--radius);
+  background:var(--surface);cursor:pointer;white-space:nowrap;
+  font-family:'Inter',sans-serif;font-weight:500;transition:all .15s
+}
+.btn-sm:hover{background:var(--surface2)}
+.btn-primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-primary:hover{background:var(--teal-light)!important}
+
+/* ══════════════════════════════════════
+   INSIGHTS
+══════════════════════════════════════ */
+.insight-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:14px 16px;
+  display:flex;gap:13px;align-items:flex-start;
+  transition:background .15s
+}
+.insight-card:hover{background:var(--surface2)}
+.insight-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.insight-icon svg{width:17px;height:17px}
+.insight-val{font-size:12px;font-weight:600;margin-top:6px}
+
+/* ══════════════════════════════════════
+   BOILER DETAIL OVERLAY
+══════════════════════════════════════ */
+.detail-overlay{
+  display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+  background:rgba(13,27,46,.6);backdrop-filter:blur(2px);
+  z-index:100;align-items:center;justify-content:center
+}
+.detail-overlay.open{display:flex}
+.detail-panel{
+  background:var(--surface);border-radius:var(--radius-lg);
+  width:560px;max-height:90vh;overflow-y:auto;padding:22px;
+  border-top:4px solid var(--teal)
+}
+.detail-close{cursor:pointer;color:var(--text3);font-size:18px;line-height:1}
+
+/* ══════════════════════════════════════
+   FILTER BAR
+══════════════════════════════════════ */
+.filter-bar{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  padding:10px 14px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--radius-lg)
+}
+.filter-bar-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-right:4px}
+
+/* ══════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+
+/* ══════════════════════════════════════
+   STAT ROW (boiler table)
+══════════════════════════════════════ */
+.boiler-row{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--border2);font-size:12px}
+.boiler-row:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-mark">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm1 15v-1a1 1 0 0 0-2 0v1a7 7 0 1 1 7-7 6.93 6.93 0 0 1-5 6.71z"/><circle cx="12" cy="12" r="2.5"/></svg>
+      </div>
+      <div>
+        <div class="logo-name">AriLinc™</div>
+        <div class="logo-tag">Boiler Intelligence</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-section">Monitor</div>
+  <div class="nav-item" onclick="showPage('overview',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    Overview
+  </div>
+  <div class="nav-item active" onclick="showPage('live',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    Live Monitoring
+    <span class="nav-badge badge-teal" id="live-count">16</span>
+  </div>
+  <div class="nav-item" onclick="showPage('alerts',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    Alerts
+    <span class="nav-badge badge-red" id="alert-badge">5</span>
+  </div>
+
+  <div class="nav-section">Analyze</div>
+  <div class="nav-item" onclick="showPage('business',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    Business Value
+  </div>
+  <div class="nav-item" onclick="showPage('efficiency',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Efficiency Reports
+  </div>
+
+  <div class="nav-section">Configure</div>
+  <div class="nav-item" onclick="showPage('settings',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Settings
+  </div>
+
+  <div class="plant-footer">
+    <div class="plant-label">Active Plant</div>
+    <select class="plant-select" id="plant-select" onchange="switchPlant(this.value)">
+      <option value="mumbai">● Mumbai Unit 1</option>
+      <option value="dubai">● Dubai Refinery</option>
+      <option value="frankfurt">● Frankfurt Plant</option>
+      <option value="singapore">● Singapore Hub</option>
+    </select>
+  </div>
+</aside>
+
+<!-- ════════════════════════════════════
+     MAIN
+════════════════════════════════════ -->
+<main class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-accent"></div>
+    <div>
+      <div class="page-title" id="page-title">Live Monitoring</div>
+      <div class="page-sub" id="page-sub"><span class="live-dot"></span>Mumbai Unit 1 — 16 boilers connected</div>
+    </div>
+    <div class="topbar-right">
+      <div class="date-range-wrap">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <input type="month" id="date-from" value="2024-01" onchange="recalcKPIs()"/>
+        <span class="date-sep">→</span>
+        <input type="month" id="date-to" value="2024-12" onchange="recalcKPIs()"/>
+      </div>
+      <button class="topbar-btn" onclick="refreshLive()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh
+      </button>
+      <button class="topbar-btn primary" onclick="exportApp()">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export
+      </button>
+    </div>
+  </div>
+
+  <!-- TAB BAR -->
+  <div class="tabs" id="tab-bar" style="display:none">
+    <div class="tab active" onclick="switchTab(this,'bv-summary')">Summary</div>
+    <div class="tab" onclick="switchTab(this,'bv-savings')">Savings Breakdown</div>
+    <div class="tab" onclick="switchTab(this,'bv-boilers')">Per Boiler</div>
+    <div class="tab" onclick="switchTab(this,'bv-insights')">AI Insights</div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="content-area">
+
+    <!-- ══ LIVE MONITORING ══ -->
+    <div class="panel active" id="page-live">
+      <div class="kpi-grid kpi-grid-4">
+        <div class="kpi-card">
+          <div class="kpi-label">Boilers Online</div>
+          <div class="kpi-val">14 / 16</div>
+          <div class="kpi-delta up">▲ 87.5% fleet availability</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">Avg. Steam Pressure</div>
+          <div class="kpi-val">8.4 bar</div>
+          <div class="kpi-delta neutral">Target: 8.5 bar</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Avg. Efficiency</div>
+          <div class="kpi-val">87.6%</div>
+          <div class="kpi-delta up">▲ +2.1pp vs baseline</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">Active Alerts</div>
+          <div class="kpi-val" style="color:var(--red)">5</div>
+          <div class="kpi-delta down">3 critical · 2 warnings</div>
+        </div>
+      </div>
+
+      <div class="filter-bar">
+        <span class="filter-bar-label">Filter:</span>
+        <button class="btn-sm btn-primary" onclick="filterBoilers('all',this)">All Units</button>
+        <button class="btn-sm" onclick="filterBoilers('ok',this)">🟢 Normal</button>
+        <button class="btn-sm" onclick="filterBoilers('warn',this)">🟡 Warning</button>
+        <button class="btn-sm" onclick="filterBoilers('crit',this)">🔴 Critical</button>
+        <button class="btn-sm" onclick="filterBoilers('off',this)">⚫ Offline</button>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3);font-weight:500" id="last-refresh"><span class="live-dot"></span>Live · Updated just now</span>
+      </div>
+
+      <div class="live-grid" id="live-grid"></div>
+    </div>
+
+    <!-- ══ ALERTS ══ -->
+    <div class="panel" id="page-alerts">
+      <div class="kpi-grid kpi-grid-3">
+        <div class="kpi-card red">
+          <div class="kpi-label">Critical</div>
+          <div class="kpi-val" style="color:var(--red)">3</div>
+          <div class="kpi-delta down">Immediate action required</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">Warnings</div>
+          <div class="kpi-val" style="color:var(--orange)">2</div>
+          <div class="kpi-delta neutral">Monitor closely</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Resolved Today</div>
+          <div class="kpi-val" style="color:var(--green)">8</div>
+          <div class="kpi-delta up">▲ Avg. resolution 42 min</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="section-hd">Active Alerts</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn-sm btn-primary" onclick="filterAlerts('all',this)">All</button>
+          <button class="btn-sm" onclick="filterAlerts('critical',this)">Critical</button>
+          <button class="btn-sm" onclick="filterAlerts('warning',this)">Warning</button>
+          <button class="btn-sm" onclick="filterAlerts('info',this)">Info</button>
+        </div>
+      </div>
+      <div id="alerts-list"></div>
+    </div>
+
+    <!-- ══ BUSINESS VALUE ══ -->
+    <div class="panel" id="page-business">
+
+      <!-- Summary -->
+      <div class="panel active" id="bv-summary">
+        <div class="kpi-grid kpi-grid-4">
+          <div class="kpi-card">
+            <div class="kpi-label">Total Savings</div>
+            <div class="kpi-val" id="bv-total">—</div>
+            <div class="kpi-delta up" id="bv-total-d">▲ 18% vs prior period</div>
+          </div>
+          <div class="kpi-card orange">
+            <div class="kpi-label">Fuel Efficiency Gain</div>
+            <div class="kpi-val" id="bv-eff">—</div>
+            <div class="kpi-delta up" id="bv-eff-d">▲ improvement</div>
+          </div>
+          <div class="kpi-card green">
+            <div class="kpi-label">CO₂ Reduced</div>
+            <div class="kpi-val" id="bv-co2">—</div>
+            <div class="kpi-delta up" id="bv-co2-d">▲ reduction YoY</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">ROI</div>
+            <div class="kpi-val" id="bv-roi" style="color:var(--teal)">—</div>
+            <div class="kpi-delta up" id="bv-roi-d">Payback period</div>
+          </div>
+        </div>
+        <div class="grid-3-1">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Monthly Savings Trend</div>
+                <div class="card-meta" id="bv-trend-meta">AI-optimized vs baseline</div>
+              </div>
+              <div class="legend">
+                <div class="leg-item"><div class="leg-dot" style="background:#0097A7"></div>AI-optimized</div>
+                <div class="leg-item"><div class="leg-dot" style="background:#B2EBF2"></div>Baseline</div>
+              </div>
+            </div>
+            <div style="position:relative;width:100%;height:185px"><canvas id="trendChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div><div class="card-title">Savings Mix</div><div class="card-meta">By category</div></div>
+            </div>
+            <div style="position:relative;width:100%;height:140px"><canvas id="pieChart"></canvas></div>
+            <div class="legend" style="margin-top:10px;gap:8px">
+              <div class="leg-item"><div class="leg-dot" style="background:#FF9800"></div>Fuel 58%</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#0097A7"></div>Maint. 21%</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#4CAF50"></div>Emiss. 13%</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#EF5350"></div>Downtime 8%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div><div class="card-title">Cumulative Value vs Investment</div><div class="card-meta" id="bv-cumul-meta">Breakeven achieved in month 5</div></div>
+            <div class="legend">
+              <div class="leg-item"><div class="leg-dot" style="background:#0097A7"></div>Cumulative savings</div>
+              <div class="leg-item"><div class="leg-dot" style="background:#EF5350"></div>Investment</div>
+            </div>
+          </div>
+          <div style="position:relative;width:100%;height:155px"><canvas id="cumulChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Savings Breakdown -->
+      <div class="panel" id="bv-savings">
+        <div class="kpi-grid kpi-grid-4">
+          <div class="kpi-card orange"><div class="kpi-label">Fuel Savings</div><div class="kpi-val" id="bv-s-fuel">—</div><div class="kpi-delta neutral">58% of total</div></div>
+          <div class="kpi-card"><div class="kpi-label">Maintenance Avoided</div><div class="kpi-val" id="bv-s-maint">—</div><div class="kpi-delta neutral">21% of total</div></div>
+          <div class="kpi-card green"><div class="kpi-label">Emissions Credits</div><div class="kpi-val" id="bv-s-emis">—</div><div class="kpi-delta neutral">13% of total</div></div>
+          <div class="kpi-card red"><div class="kpi-label">Downtime Avoided</div><div class="kpi-val" id="bv-s-down">—</div><div class="kpi-delta neutral">8% of total</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Savings by Optimization Lever</div></div>
+          <table class="data-table">
+            <thead><tr><th>Category</th><th>Lever</th><th id="bv-lever-col">Value</th><th style="width:185px">Contribution</th></tr></thead>
+            <tbody id="savings-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Per Boiler -->
+      <div class="panel" id="bv-boilers">
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Efficiency by Boiler</div><div class="card-meta">Thermal efficiency %</div></div></div>
+            <div style="position:relative;width:100%;height:300px"><canvas id="boilerChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div><div class="card-title">Savings Contribution</div><div class="card-meta" id="bv-boiler-col-label">YTD per unit</div></div></div>
+            <div id="boiler-table" style="overflow-y:auto;max-height:300px"></div>
+          </div>
+        </div>
+        <div class="card" style="background:var(--teal-bg);border-color:rgba(0,151,167,0.2);padding:11px 15px">
+          <div style="font-size:12px;color:var(--teal);display:flex;align-items:center;gap:8px;font-weight:500">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="boiler-insight-text">Boilers below 88% efficiency threshold have active predictive maintenance alerts.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Insights -->
+      <div class="panel" id="bv-insights">
+        <div id="insights-list" style="display:flex;flex-direction:column;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- ══ EFFICIENCY REPORTS ══ -->
+    <div class="panel" id="page-efficiency">
+      <div class="card" style="text-align:center;padding:70px 20px">
+        <div style="width:48px;height:48px;background:var(--teal-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Efficiency Reports</div>
+        <div style="font-size:13px;color:var(--text3)">Weekly and monthly efficiency trend reports, heat loss analysis, and benchmark comparison.</div>
+      </div>
+    </div>
+
+    <!-- ══ OVERVIEW ══ -->
+    <div class="panel" id="page-overview">
+      <div class="card" style="text-align:center;padding:70px 20px">
+        <div style="width:48px;height:48px;background:var(--teal-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Fleet Overview</div>
+        <div style="font-size:13px;color:var(--text3)">Multi-plant fleet dashboard with geographic heat-map view.</div>
+      </div>
+    </div>
+
+    <!-- ══ SETTINGS ══ -->
+    <div class="panel" id="page-settings">
+      <div class="card" style="text-align:center;padding:70px 20px">
+        <div style="width:48px;height:48px;background:var(--teal-bg);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--teal)" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06-.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:6px">Settings</div>
+        <div style="font-size:13px;color:var(--text3)">Alert thresholds, notifications, user management, and API integrations.</div>
+      </div>
+    </div>
+
+  </div><!-- /content-area -->
+</main>
+
+<!-- BOILER DETAIL OVERLAY -->
+<div class="detail-overlay" id="detail-overlay" onclick="closeDetail(event)">
+  <div class="detail-panel" onclick="event.stopPropagation()">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div style="font-size:15px;font-weight:700" id="detail-title">BLR-01 Details</div>
+      <div class="detail-close" onclick="document.getElementById('detail-overlay').classList.remove('open')">✕</div>
+    </div>
+    <div id="detail-body"></div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+const PLANTS = {
+  mumbai:    {name:'Mumbai Unit 1',    currency:'₹',  unit:'L',   totalSavings:240, roi:312, co2:840,  effGain:6.8, payback:'4.2 mo',
+              trendActual:[12,15,14,18,20,19,22,24,21,25,23,27], trendBase:[8,8,9,9,10,10,10,11,11,11,12,12], investment:[30,35,38,40,41,42,43,44,45,46,47,48]},
+  dubai:     {name:'Dubai Refinery',   currency:'$',  unit:'K',   totalSavings:420, roi:285, co2:1140, effGain:5.9, payback:'5.8 mo',
+              trendActual:[28,33,31,38,42,41,46,50,45,52,49,57], trendBase:[18,18,20,20,22,22,23,23,24,24,25,25], investment:[80,90,95,98,100,102,104,106,108,110,112,115]},
+  frankfurt: {name:'Frankfurt Plant',  currency:'€',  unit:'K',   totalSavings:310, roi:248, co2:720,  effGain:5.2, payback:'6.4 mo',
+              trendActual:[18,22,20,26,29,28,32,35,31,38,35,42], trendBase:[12,12,13,13,14,14,15,15,15,16,16,17], investment:[55,62,66,69,71,72,73,74,75,76,77,79]},
+  singapore: {name:'Singapore Hub',    currency:'S$', unit:'K',   totalSavings:195, roi:336, co2:560,  effGain:7.4, payback:'3.9 mo',
+              trendActual:[9,11,10,14,16,15,18,20,17,21,19,23],  trendBase:[6,6,7,7,8,8,8,9,9,9,10,10],          investment:[18,21,23,24,25,26,26,27,27,28,28,29]},
+};
+
+const BOILER_NAMES  = ['BLR-01','BLR-02','BLR-03','BLR-04','BLR-05','BLR-06','BLR-07','BLR-08','BLR-09','BLR-10','BLR-11','BLR-12','BLR-13','BLR-14','BLR-15','BLR-16'];
+const BOILER_EFF    = [94.2,91.8,90.4,89.1,88.6,87.9,86.8,85.3,84.7,83.2,82.7,81.4,80.8,79.9,79.4,78.1];
+const BOILER_STATUS = ['ok','ok','ok','ok','ok','ok','ok','warn','warn','warn','warn','crit','warn','crit','crit','off'];
+const BOILER_PRESS  = [8.7,8.5,8.6,8.4,8.5,8.3,8.4,8.2,8.1,8.0,7.9,7.6,7.8,7.5,7.4,0];
+const BOILER_TEMP   = [184,182,183,181,182,180,181,178,177,176,175,170,174,168,166,0];
+const BOILER_LOAD   = [98,95,96,93,94,91,92,88,86,84,83,80,81,78,76,0];
+
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+let currentPlant  = 'mumbai';
+let currentFilter = 'all';
+let alertFilter   = 'all';
+let charts        = {};
+
+const ALERTS = [
+  {id:'A001',severity:'critical',boiler:'BLR-12',title:'Flame failure detected',          desc:'Repeated ignition failures on burner 2. Boiler tripped and is offline. Immediate inspection required.',       time:'8 min ago', impact:'₹2.4L downtime risk',        cat:'Safety'},
+  {id:'A002',severity:'critical',boiler:'BLR-15',title:'Steam pressure below threshold',  desc:'Steam pressure dropped to 7.4 bar — 12% below setpoint. Load reduction applied automatically.',                 time:'22 min ago',impact:'₹1.1L production loss',        cat:'Process'},
+  {id:'A003',severity:'critical',boiler:'BLR-14',title:'Combustion drift — high O₂',      desc:'Excess air ratio at 34%, severely above optimal 20%. Fuel waste detected at 18% above baseline.',               time:'1 hr ago',  impact:'₹4.2L/yr fuel waste',         cat:'Efficiency'},
+  {id:'A004',severity:'warning', boiler:'BLR-08',title:'Tube fouling predicted in 14 days',desc:'Heat transfer degradation detected via AI trend analysis. Schedule cleaning to avoid unplanned shutdown.',      time:'2 hr ago',  impact:'₹8.5L risk avoided',          cat:'Predictive'},
+  {id:'A005',severity:'warning', boiler:'BLR-11',title:'Feed water temperature deviation', desc:'Feed water temp 4°C below setpoint for 90 min. Check economiser and heat exchanger.',                          time:'3 hr ago',  impact:'Efficiency -1.2%',            cat:'Process'},
+  {id:'A006',severity:'info',    boiler:'All',    title:'Carbon credit deadline in 18 days',desc:'PAT cycle deadline approaching. Current verified savings qualify for 840t CO₂ credits.',                       time:'6 hr ago',  impact:'₹11.4L opportunity',          cat:'Compliance'},
+  {id:'A007',severity:'info',    boiler:'BLR-09', title:'Scheduled maintenance in 3 days', desc:'Quarterly burner inspection due on BLR-09. Parts and technician confirmed.',                                    time:'12 hr ago', impact:'Planned downtime 4h',          cat:'Maintenance'},
+];
+
+const INSIGHTS = [
+  {bg:'#E0F7FA',stroke:'#0097A7',title:'Combustion optimization — BLR-13 & BLR-14',
+   desc:'Excess air ratio running 8–12pp above optimal. Reducing to 20% target could recover fuel savings with no steam output impact.',
+   val:'₹6.8L/yr fuel savings opportunity',valColor:'var(--teal)'},
+  {bg:'#FFF3E0',stroke:'#E65100',title:'Tube fouling predicted — BLR-08 (14 days)',
+   desc:'Heat transfer degradation detected via AI trend analysis. Scheduling tube cleaning now prevents unplanned shutdown.',
+   val:'Risk avoided: ₹8.5L',valColor:'var(--orange)'},
+  {bg:'#E8F5E9',stroke:'#2E7D32',title:'Load shifting saves peak tariff costs',
+   desc:'AI identified 3 daily windows where steam demand can be shifted off peak-hours, reducing grid draw during expensive tariff slots.',
+   val:'Savings potential: ₹6.1L/yr',valColor:'var(--green)'},
+  {bg:'#E8F5E9',stroke:'#2E7D32',title:'New carbon credit opportunity — 840t CO₂',
+   desc:'Verified emissions data qualifies for PAT cycle credit generation. Register before the cycle deadline.',
+   val:'Credit value: ₹11.4L',valColor:'var(--green)'},
+  {bg:'#FFEBEE',stroke:'#C62828',title:'BLR-12 flame instability pattern',
+   desc:'Recurring ignition failure pattern detected over 72 hours. Root cause likely burner tip erosion. Recommend immediate replacement.',
+   val:'Downtime risk: ₹2.4L',valColor:'var(--red)'},
+  {bg:'#E0F7FA',stroke:'#0097A7',title:'Steam header pressure optimization',
+   desc:'Running header pressure 0.3 bar above process requirement across 6 boilers. Reducing setpoint saves fuel without affecting production.',
+   val:'Savings: ₹3.2L/yr',valColor:'var(--teal)'},
+];
+
+const LEVERS = [
+  {cat:'fuel', badge:'badge-fuel', label:'Fuel',       lever:'Combustion air/fuel ratio optimization',       pct:33},
+  {cat:'fuel', badge:'badge-fuel', label:'Fuel',       lever:'Steam pressure setpoint optimization',          pct:18},
+  {cat:'fuel', badge:'badge-fuel', label:'Fuel',       lever:'Load scheduling & sequencing',                  pct: 8},
+  {cat:'maint',badge:'badge-maint',label:'Maint.',     lever:'Predictive tube cleaning alerts',               pct:12},
+  {cat:'maint',badge:'badge-maint',label:'Maint.',     lever:'Burner fault prediction (avoided trips)',        pct: 9},
+  {cat:'emis', badge:'badge-emis', label:'Emissions',  lever:'NOx reduction via flue gas recirculation',      pct: 8},
+  {cat:'emis', badge:'badge-emis', label:'Emissions',  lever:'Carbon credit generation',                      pct: 5},
+  {cat:'down', badge:'badge-down', label:'Downtime',   lever:'Unplanned shutdown prevention',                 pct: 8},
+];
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+function showPage(name, el) {
+  document.querySelectorAll('.panel').forEach(p => { if (!p.closest('#page-business')) p.classList.remove('active'); });
+  ['bv-summary','bv-savings','bv-boilers','bv-insights'].forEach(id => { const e=document.getElementById(id); if(e) e.classList.remove('active'); });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+
+  const tabBar = document.getElementById('tab-bar');
+  const titles = {
+    live:['Live Monitoring','boilers connected — real-time'],
+    alerts:['Alerts','Active alerts and predictive notifications'],
+    business:['Business Value','Financial impact of AI-driven optimization'],
+    efficiency:['Efficiency Reports','Historical performance & benchmarking'],
+    overview:['Fleet Overview','All plants at a glance'],
+    settings:['Settings','Platform configuration']
+  };
+  const [t,s] = titles[name]||[name,''];
+  const p = PLANTS[currentPlant];
+  document.getElementById('page-title').textContent = t;
+  document.getElementById('page-sub').innerHTML = <span class="live-dot"></span>${p.name} — ${s};
+
+  if (name === 'business') {
+    tabBar.style.display = 'flex';
+    document.getElementById('page-business').classList.add('active');
+    document.getElementById('bv-summary').classList.add('active');
+    document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===0));
+    setTimeout(() => { buildCharts(); recalcKPIs(); }, 50);
+  } else {
+    tabBar.style.display = 'none';
+    const pg = document.getElementById('page-' + name);
+    if (pg) pg.classList.add('active');
+    if (name === 'live') buildLiveGrid();
+    if (name === 'alerts') buildAlerts();
+  }
+}
+
+function switchTab(el, panelId) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  ['bv-summary','bv-savings','bv-boilers','bv-insights'].forEach(id => { const p=document.getElementById(id); if(p) p.classList.remove('active'); });
+  const t = document.getElementById(panelId);
+  if (t) t.classList.add('active');
+  if (panelId==='bv-boilers') buildBoilerTab();
+  if (panelId==='bv-savings') buildSavingsTab();
+  if (panelId==='bv-insights') buildInsights();
+  recalcKPIs();
+}
+
+// ══════════════════════════════════════════════
+// PLANT SWITCH
+// ══════════════════════════════════════════════
+function switchPlant(val) {
+  currentPlant = val;
+  const p = PLANTS[val];
+  document.getElementById('page-sub').innerHTML = <span class="live-dot"></span>${p.name} — ${document.getElementById('page-title').textContent};
+  recalcKPIs(); buildCharts(); buildLiveGrid(); buildBoilerTab(); buildSavingsTab(); buildInsights();
+}
+
+// ══════════════════════════════════════════════
+// DATE RANGE → KPI RECALC
+// ══════════════════════════════════════════════
+function getMonthRange() {
+  const from = document.getElementById('date-from').value || '2024-01';
+  const to   = document.getElementById('date-to').value   || '2024-12';
+  const [fy,fm] = from.split('-').map(Number);
+  const [ty,tm] = to.split('-').map(Number);
+  const s = Math.max(0, (fy-2024)*12 + fm - 1);
+  const e = Math.min(11,(ty-2024)*12 + tm - 1);
+  return [Math.min(s,e), Math.max(s,e)];
+}
+
+function recalcKPIs() {
+  const p = PLANTS[currentPlant];
+  const [s,e] = getMonthRange();
+  const months = e - s + 1;
+  const frac = months / 12;
+  const sym = p.currency, u = p.unit;
+  const total = Math.round(p.totalSavings * frac);
+  const co2   = Math.round(p.co2 * frac);
+  const roi   = Math.round(p.roi * (0.8 + frac * 0.2));
+  set('bv-total', sym + total + u);
+  set('bv-total-d', '▲ ' + months + ' month' + (months>1?'s':'') + ' selected');
+  set('bv-eff', p.effGain.toFixed(1) + '%');
+  set('bv-eff-d', '▲ Across 16 boilers');
+  set('bv-co2', co2 + ' t');
+  set('bv-co2-d', '▲ ' + Math.round(co2/16) + 't avg/boiler');
+  set('bv-roi', roi + '%');
+  set('bv-roi-d', 'Payback: ' + p.payback);
+  set('bv-s-fuel',  sym + Math.round(total*.58) + u);
+  set('bv-s-maint', sym + Math.round(total*.21) + u);
+  set('bv-s-emis',  sym + Math.round(total*.13) + u);
+  set('bv-s-down',  sym + Math.round(total*.08) + u);
+  set('bv-lever-col', 'Value (' + sym + u + ')');
+  set('bv-boiler-col-label', 'YTD per unit (' + sym + u + ')');
+  set('bv-trend-meta', 'AI-optimized vs baseline · ' + sym + u + '/month');
+  rebuildTrendChart(s, e);
+  rebuildCumulChart(s, e);
+}
+
+function set(id, val) { const e = document.getElementById(id); if (e) e.textContent = val; }
+
+// ══════════════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════════════
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+function buildCharts() { buildTrendChart(); buildPieChart(); buildCumulChart(); }
+
+function buildTrendChart() {
+  destroyChart('trend');
+  const ctx = document.getElementById('trendChart'); if (!ctx) return;
+  const p = PLANTS[currentPlant];
+  charts['trend'] = new Chart(ctx, {
+    type:'line', data:{labels:MONTHS,datasets:[
+      {label:'AI-optimized',data:p.trendActual,borderColor:'#0097A7',backgroundColor:'rgba(0,151,167,0.08)',fill:true,tension:0.4,pointRadius:3,borderWidth:2.5,pointBackgroundColor:'#0097A7'},
+      {label:'Baseline',    data:p.trendBase,  borderColor:'#B2EBF2',borderDash:[4,3],fill:false,tension:0.4,pointRadius:0,borderWidth:1.5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11,family:'Inter'},color:'#9CA3AF'}},
+              y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:11,family:'Inter'},color:'#9CA3AF',callback:v=>p.currency+v+p.unit}}}}
+  });
+}
+
+function rebuildTrendChart(s, e) {
+  if (!charts['trend']) return;
+  const p = PLANTS[currentPlant];
+  charts['trend'].data.labels = MONTHS.slice(s, e+1);
+  charts['trend'].data.datasets[0].data = p.trendActual.slice(s, e+1);
+  charts['trend'].data.datasets[1].data = p.trendBase.slice(s, e+1);
+  charts['trend'].update();
+}
+
+function buildPieChart() {
+  destroyChart('pie');
+  const ctx = document.getElementById('pieChart'); if (!ctx) return;
+  charts['pie'] = new Chart(ctx, {
+    type:'doughnut', data:{labels:['Fuel','Maintenance','Emissions','Downtime'],
+      datasets:[{data:[58,21,13,8],backgroundColor:['#FF9800','#0097A7','#4CAF50','#EF5350'],borderWidth:0,hoverOffset:5}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>ctx.label+': '+ctx.parsed+'%'}}}}
+  });
+}
+
+function buildCumulChart() {
+  destroyChart('cumul');
+  const ctx = document.getElementById('cumulChart'); if (!ctx) return;
+  const p = PLANTS[currentPlant];
+  const cumul = p.trendActual.reduce((a,v,i)=>{a.push((a[i-1]||0)+v);return a;},[]);
+  charts['cumul'] = new Chart(ctx, {
+    type:'bar', data:{labels:MONTHS,datasets:[
+      {label:'Cumulative savings',data:cumul,  backgroundColor:'rgba(0,151,167,0.15)',borderColor:'#0097A7',borderWidth:1.5,type:'bar'},
+      {label:'Investment',        data:p.investment,borderColor:'#EF5350',borderDash:[4,3],fill:false,type:'line',tension:0,pointRadius:0,borderWidth:1.5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{display:false},ticks:{font:{size:11,family:'Inter'},color:'#9CA3AF'}},
+              y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:11,family:'Inter'},color:'#9CA3AF',callback:v=>PLANTS[currentPlant].currency+v+PLANTS[currentPlant].unit}}}}
+  });
+}
+
+function rebuildCumulChart(s, e) {
+  if (!charts['cumul']) return;
+  const p = PLANTS[currentPlant];
+  const slice = p.trendActual.slice(s, e+1);
+  const cumul = slice.reduce((a,v,i)=>{a.push((a[i-1]||0)+v);return a;},[]);
+  charts['cumul'].data.labels = MONTHS.slice(s, e+1);
+  charts['cumul'].data.datasets[0].data = cumul;
+  charts['cumul'].data.datasets[1].data = p.investment.slice(s, e+1);
+  charts['cumul'].update();
+}
+
+// ══════════════════════════════════════════════
+// BOILER TAB
+// ══════════════════════════════════════════════
+function buildBoilerTab() {
+  const p = PLANTS[currentPlant];
+  destroyChart('boiler');
+  const ctx = document.getElementById('boilerChart');
+  if (ctx) {
+    const colors = BOILER_EFF.map(e => e>=88?'rgba(0,151,167,0.75)':e>=83?'rgba(255,152,0,0.75)':'rgba(239,83,80,0.75)');
+    charts['boiler'] = new Chart(ctx, {
+      type:'bar', data:{labels:BOILER_NAMES,datasets:[{label:'Efficiency %',data:BOILER_EFF,backgroundColor:colors,borderRadius:4,borderWidth:0}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{grid:{display:false},ticks:{font:{size:10,family:'Inter'},color:'#9CA3AF',maxRotation:45}},
+                y:{min:70,max:100,grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:11,family:'Inter'},color:'#9CA3AF',callback:v=>v+'%'}}}}
+    });
+  }
+  const sym = p.currency, u = p.unit;
+  const savings = BOILER_EFF.map(e=>((e/94.2)*p.totalSavings/16).toFixed(1));
+  const html = BOILER_NAMES.map((name,i)=>{
+    const eff = BOILER_EFF[i];
+    const col  = eff>=88?'var(--teal)':eff>=83?'var(--orange)':'var(--red)';
+    const barC = eff>=88?'#0097A7':eff>=83?'#FF9800':'#EF5350';
+    const barW = Math.round((eff-70)/30*100);
+    return `<div class="boiler-row">
+      <span style="font-weight:700;width:56px;flex-shrink:0">${name}</span>
+      <div style="flex:1"><div class="bar-bg"><div class="bar-fill" style="width:${barW}%;background:${barC}"></div></div></div>
+      <span style="color:${col};font-weight:700;width:42px;text-align:right">${eff}%</span>
+      <span style="font-weight:600;width:66px;text-align:right">${sym}${savings[i]}${u}</span>
+    </div>`;
+  }).join('');
+  const el = document.getElementById('boiler-table'); if (el) el.innerHTML = html;
+  const below = BOILER_EFF.filter(e=>e<88).length;
+  set('boiler-insight-text', ${below} boilers below the 88% efficiency threshold — active predictive maintenance alerts across all.);
+}
+
+// ══════════════════════════════════════════════
+// SAVINGS BREAKDOWN
+// ══════════════════════════════════════════════
+function buildSavingsTab() {
+  const p = PLANTS[currentPlant];
+  const [s,e] = getMonthRange();
+  const total = Math.round(p.totalSavings*(e-s+1)/12);
+  const tbody = document.getElementById('savings-tbody'); if (!tbody) return;
+  const barColors = {fuel:'#FF9800',maint:'#0097A7',emis:'#4CAF50',down:'#EF5350'};
+  tbody.innerHTML = LEVERS.map(l=>{
+    const val = (total*l.pct/100).toFixed(1);
+    return `<tr>
+      <td><span class="badge ${l.badge}">${l.label}</span></td>
+      <td>${l.lever}</td>
+      <td style="font-weight:600">${p.currency}${val}${p.unit}</td>
+      <td><div class="bar-wrap"><div class="bar-bg"><div class="bar-fill" style="width:${l.pct*2}%;background:${barColors[l.cat]}"></div></div><span style="font-size:11px;color:var(--text3);width:30px;text-align:right;font-weight:600">${l.pct}%</span></div></td>
+    </tr>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════
+// INSIGHTS
+// ══════════════════════════════════════════════
+function buildInsights() {
+  const container = document.getElementById('insights-list'); if (!container) return;
+  container.innerHTML = INSIGHTS.map(ins=>`
+    <div class="insight-card">
+      <div class="insight-icon" style="background:${ins.bg}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${ins.stroke}" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--text)">${ins.title}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:3px;line-height:1.55">${ins.desc}</div>
+        <div class="insight-val" style="color:${ins.valColor}">${ins.val}</div>
+      </div>
+    </div>`).join('');
+  container.innerHTML += <button onclick="alert('Full action plan generated and queued for plant manager.')" style="width:100%;margin-top:4px;padding:10px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface);font-size:13px;font-weight:600;cursor:pointer;color:var(--teal);font-family:'Inter',sans-serif">Generate Full Action Plan →</button>;
+}
+
+// ══════════════════════════════════════════════
+// LIVE GRID
+// ══════════════════════════════════════════════
+function buildLiveGrid() {
+  const grid = document.getElementById('live-grid'); if (!grid) return;
+  const statusColor = {ok:'#4CAF50',warn:'#FF9800',crit:'#EF5350',off:'#9E9E9E'};
+  const effBg = e => e>=88?'var(--teal-bg);color:var(--teal)':e>=83?'var(--orange-bg);color:var(--orange)':e>0?'var(--red-bg);color:var(--red)':'var(--surface2);color:var(--text3)';
+  grid.innerHTML = BOILER_NAMES.map((name,i)=>{
+    const st = BOILER_STATUS[i];
+    if (currentFilter!=='all' && st!==currentFilter) return '';
+    const isOff = st==='off';
+    return `<div class="boiler-tile st-${st}" onclick="showBoilerDetail(${i})">
+      <div class="tile-header">
+        <span class="tile-id">${name}</span>
+        <div class="tile-status-dot ${st==='ok'?'live-dot':''}" style="background:${statusColor[st]};width:9px;height:9px;border-radius:50%;display:inline-block"></div>
+      </div>
+      <div class="tile-row"><div class="tile-stat">Steam pressure</div><div class="tile-val">${isOff?'— bar':BOILER_PRESS[i]+' bar'}</div></div>
+      <div class="tile-row"><div class="tile-stat">Flue temp</div><div class="tile-val">${isOff?'—°C':BOILER_TEMP[i]+'°C'}</div></div>
+      <div class="tile-row"><div class="tile-stat">Load</div><div class="tile-val">${isOff?'—%':BOILER_LOAD[i]+'%'}</div></div>
+      <div class="tile-eff" style="background:${effBg(isOff?0:BOILER_EFF[i]).split(';')[0]};color:${effBg(isOff?0:BOILER_EFF[i]).split('color:')[1]||'var(--text3)'};font-weight:700">
+        ${isOff?'Offline':BOILER_EFF[i]+'% eff.'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterBoilers(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-bar .btn-sm').forEach(b=>{b.className='btn-sm';});
+  btn.className = 'btn-sm btn-primary';
+  buildLiveGrid();
+}
+
+function refreshLive() {
+  document.getElementById('last-refresh').innerHTML = '<span class="live-dot"></span>Live · Updated just now';
+  buildLiveGrid();
+}
+
+// ══════════════════════════════════════════════
+// BOILER DETAIL
+// ══════════════════════════════════════════════
+function showBoilerDetail(i) {
+  const name = BOILER_NAMES[i], st = BOILER_STATUS[i], eff = BOILER_EFF[i], isOff = st==='off';
+  const stColor = {ok:'var(--green)',warn:'var(--orange)',crit:'var(--red)',off:'var(--text3)'};
+  const stLabel = {ok:'Normal',warn:'Warning',crit:'Critical',off:'Offline'};
+  document.getElementById('detail-title').textContent = name + ' — Detail View';
+  document.getElementById('detail-body').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="kpi-card"><div class="kpi-label">Status</div><div class="kpi-val" style="font-size:16px;color:${stColor[st]}">${stLabel[st]}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Thermal Efficiency</div><div class="kpi-val" style="font-size:16px">${isOff?'—':eff+'%'}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Steam Pressure</div><div class="kpi-val" style="font-size:16px">${isOff?'—':BOILER_PRESS[i]+' bar'}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Flue Temperature</div><div class="kpi-val" style="font-size:16px">${isOff?'—':BOILER_TEMP[i]+'°C'}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Load Factor</div><div class="kpi-val" style="font-size:16px">${isOff?'—':BOILER_LOAD[i]+'%'}</div></div>
+      <div class="kpi-card"><div class="kpi-label">Excess Air Ratio</div><div class="kpi-val" style="font-size:16px">${isOff?'—':(22+i*1.3).toFixed(1)+'%'}</div></div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--text);text-transform:uppercase;letter-spacing:.5px">AI Recommendations</div>
+      ${eff<88&&!isOff?<div style="padding:10px 12px;background:var(--orange-bg);border-radius:var(--radius);font-size:12px;color:var(--orange);margin-bottom:6px;font-weight:500;border-left:3px solid var(--orange)">⚠ Combustion excess air above optimal — adjust air/fuel ratio to 20%</div>:''}
+      ${eff<83&&!isOff?<div style="padding:10px 12px;background:var(--red-bg);border-radius:var(--radius);font-size:12px;color:var(--red);margin-bottom:6px;font-weight:500;border-left:3px solid var(--red-mid)">🔴 Efficiency critically low — schedule inspection within 48 hours</div>:''}
+      ${isOff?<div style="padding:10px 12px;background:var(--red-bg);border-radius:var(--radius);font-size:12px;color:var(--red);margin-bottom:6px;font-weight:500;border-left:3px solid var(--red-mid)">⛔ Boiler offline — investigation in progress</div>:''}
+      ${eff>=88?<div style="padding:10px 12px;background:var(--teal-bg);border-radius:var(--radius);font-size:12px;color:var(--teal);font-weight:500;border-left:3px solid var(--teal)">✓ Operating within optimal parameters. No action required.</div>:''}
+    </div>
+    <button onclick="document.getElementById('detail-overlay').classList.remove('open')" class="btn-sm btn-primary" style="width:100%;padding:9px;font-size:13px">Close</button>`;
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail(e) {
+  if (e.target===document.getElementById('detail-overlay'))
+    document.getElementById('detail-overlay').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// ALERTS
+// ══════════════════════════════════════════════
+function buildAlerts() {
+  const container = document.getElementById('alerts-list'); if (!container) return;
+  const filtered = alertFilter==='all' ? ALERTS : ALERTS.filter(a=>a.severity===alertFilter);
+  const ibg = {critical:'var(--red-bg)',warning:'var(--orange-bg)',info:'var(--teal-bg)'};
+  const iclr = {critical:'var(--red)',warning:'var(--orange)',info:'var(--teal)'};
+  container.innerHTML = filtered.map(a=>`
+    <div class="alert-row sev-${a.severity}">
+      <div class="alert-icon" style="background:${ibg[a.severity]}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="${iclr[a.severity]}" stroke-width="2">
+          ${a.severity==='critical'?'<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>':
+           a.severity==='warning'?'<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>':
+           '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'}
+        </svg>
+      </div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="alert-title">${a.title}</div>
+          <span class="badge ${a.severity==='critical'?'badge-crit':a.severity==='warning'?'badge-warn':'badge-info'}">${a.severity}</span>
+          <span class="badge" style="background:var(--surface2);color:var(--text3)">${a.cat}</span>
+        </div>
+        <div class="alert-desc">${a.desc}</div>
+        <div class="alert-meta">
+          <span>📍 ${a.boiler}</span>
+          <span>🕐 ${a.time}</span>
+          <span style="color:${iclr[a.severity]};font-weight:600">💰 ${a.impact}</span>
+        </div>
+      </div>
+      <div class="alert-actions">
+        ${a.severity!=='info'?<button class="btn-sm btn-primary" onclick="resolveAlert(this,'${a.id}')">Acknowledge</button>:''}
+        <button class="btn-sm" onclick="alert('Work order created for ${a.boiler}')">Create WO</button>
+      </div>
+    </div>`).join('');
+}
+
+function filterAlerts(f, btn) {
+  alertFilter = f;
+  document.querySelectorAll('#page-alerts .btn-sm').forEach(b=>{b.className='btn-sm';});
+  btn.className = 'btn-sm btn-primary';
+  buildAlerts();
+}
+
+function resolveAlert(btn, id) {
+  btn.closest('.alert-row').style.opacity='0.45';
+  btn.textContent = '✓ Acknowledged'; btn.disabled = true;
+  const c = parseInt(document.getElementById('alert-badge').textContent);
+  document.getElementById('alert-badge').textContent = Math.max(0, c-1);
+}
+
+// ══════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════
+function exportApp() { window.print(); }
+
+// ══════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  buildLiveGrid();
+  buildAlerts();
+  buildInsights();
+});
+</script>
+</body>
 </html>

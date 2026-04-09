@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>SteamBytes — AriLinc-Intelligent AI Platform Demo | By AriPrus</title>
+<title>SteamBytes — Open-Source Platform Demo | AriPrus Proposal</title>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{
   --bg:#060D12;--bg2:#0A1520;--bg3:#0E1D2A;--card:#102030;--cardHi:#16293A;
@@ -314,7 +317,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
     <div class="nav-right">
       <div class="nav-time" id="navClock">—</div>
       <div class="live-badge"><div class="blink"></div>LIVE</div>
-     
+      <button class="btn-nav" onclick="showView('proposal')">View Proposal</button>
     </div>
   </div>
 </nav>
@@ -395,7 +398,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <button class="range-btn">7D</button>
       <button class="range-btn">14D</button>
       <button class="range-btn">30D</button>
-      <button class="btn-export" onclick="showToast('Trend data exported to CSV')">⬇ Export</button>
+      <button class="btn-export" onclick="exportTrendsCSV()">⬇ Export</button>
     </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="paramToggles"></div>
     <div class="card mb4">
@@ -430,8 +433,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <select class="dc-select"><option>JH-PMD-81723 · wilmar</option><option>KL-PMD-62411 · Nestle</option></select>
       <input type="date" class="dc-select" value="2026-02-12"/>
       <select class="dc-select"><option>All Fields</option><option>Performance</option><option>Efficiency</option></select>
-      <button class="btn-export" onclick="showToast('Logbook exported — SteamBytes_Log_20260212.xlsx')">⬇ Export Excel</button>
-      <button class="btn-export" onclick="showToast('PDF report generated')">⬇ PDF Report</button>
+      <button class="btn-export" onclick="exportExcel()">⬇ Export Excel</button>
+      <button class="btn-export" onclick="exportPDF()">⬇ PDF Report</button>
     </div>
     <div class="card" style="overflow-x:auto">
       <table class="data-table" id="dataTable"></table>
@@ -561,9 +564,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <h1 class="prop-h1">SteamBytes Open-Source<br/><span>Platform Migration</span></h1>
       <p class="prop-sub">A complete technical proposal to migrate the SteamBytes platform from PTC ThingWorx to a fully open-source, IP-sovereign stack — delivering superior dashboard intelligence, HAZOP safety logic, and a clear AI/ML roadmap for Mechmar's 50-year industrial legacy.</p>
       <div class="prop-by">
-        <span>Prepared by: <strong>AriPrus Digicon Pvt.Ltd</strong></span>
+        <span>Prepared by: <strong>AriPrus Industrial Intelligence</strong></span>
         <span>For: <strong>SteamBytes / Mechmar Group</strong></span>
-        <span>Contact: <strong>nazmus@steambytes.com</strong></span>
+        <span>Contact: <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b5dbd4cfd8c0c6f5c6c1d0d4d8d7ccc1d0c69bd6dad8">[email&#160;protected]</a></strong></span>
         <span>RFP Ref: <strong>SB-RFP-2026-OSS</strong></span>
       </div>
     </div>
@@ -577,7 +580,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <div class="why-card">
         <div class="wc-icon">🏭</div>
         <div class="wc-title">Industrial IoT Specialists</div>
-        <div class="wc-body">8+ years deploying open-source IIoT platforms for manufacturing, chemical processing and utilities. We understand PLCs, Modbus, Node-RED and industrial data pipelines natively — not as IT generalists.</div>
+        <div class="wc-body">3+ years deploying open-source IIoT platforms for manufacturing, chemical processing and utilities. We understand PLCs, Modbus, Node-RED and industrial data pipelines natively — not as IT generalists.</div>
       </div>
       <div class="why-card">
         <div class="wc-icon">🤖</div>
@@ -587,7 +590,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <div class="why-card">
         <div class="wc-icon">🔓</div>
         <div class="wc-title">True IP Sovereignty</div>
-        <div class="wc-body">100% open-source stack — no ThingWorx, One-time license fees, no vendor lock-in.</div>
+        <div class="wc-body">100% open-source stack — no ThingWorx, no license fees, no vendor lock-in. Every line of code delivered to Mechmar under full IP ownership. Grafana + TimescaleDB + Apache Superset runs on your own cloud forever.</div>
       </div>
       <div class="why-card">
         <div class="wc-icon">📡</div>
@@ -596,8 +599,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       </div>
       <div class="why-card">
         <div class="wc-icon">🇲🇾</div>
-        <div class="wc-title">Remote Support</div>
-        <div class="wc-body"> Remote support for the pilot customer included in Phase 1. Business hours + emergency response SLA available.</div>
+        <div class="wc-title">Malaysia-Based Support</div>
+        <div class="wc-body">Local engineering team in Kuala Lumpur. On-site support for the three customer sites (Johor Bahru, KL, Penang) included in Phase 1. Business hours + emergency response SLA available.</div>
       </div>
       <div class="why-card">
         <div class="wc-icon">⚡</div>
@@ -610,7 +613,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
     <div class="sect-hdr mb4">
       <div class="sect-tag">Architecture</div>
       <div class="sect-h">Proposed Open-Source Stack</div>
-      <div class="sect-sub">Replacing ThingWorx entirely. </div>
+      <div class="sect-sub">Replacing ThingWorx entirely. Zero license fees. Full IP ownership for Mechmar.</div>
     </div>
     <div class="tech-stack mb5">
       <div class="ts-item ts-oss"><div class="ts-icon">🗄</div><div><div class="ts-name">TimescaleDB</div><div class="ts-desc">Time-series PostgreSQL — replaces ThingWorx database. Hypertables optimised for sensor data at scale.</div></div></div>
@@ -728,7 +731,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
           <tr><td>4</td><td>3-Site Deployment & Training</td><td>Remote Node-RED update + on-site training at wilmar, Nestle KL, IOI Penang (travel included)</td><td class="cost-val">RM 22,000</td><td>One-time</td></tr>
           <tr><td>5</td><td>AI/ML Phase 1 Roadmap</td><td>Data readiness · Baseline efficiency model · Anomaly detection · MLflow setup</td><td class="cost-val">RM 38,000</td><td>One-time</td></tr>
           <tr><td style="font-weight:700;color:var(--white)" colspan="3">TOTAL ONE-TIME INVESTMENT</td><td class="cost-val" style="font-size:16px">RM 151,000</td><td>Phase 1</td></tr>
-          <tr><td>6</td><td>IoT Platform (Cloud/VPS)</td><td>Existing Mechmar server — no new cloud needed.</td><td class="cost-val">RM 0 / month</td><td>Recurring</td></tr>
+          <tr><td>6</td><td>IoT Platform (Cloud/VPS)</td><td>Existing Mechmar server — no new cloud needed. Open-source: RM 0 license fees forever.</td><td class="cost-val">RM 0 / month</td><td>Recurring</td></tr>
           <tr><td>7</td><td>Post-Development Support</td><td>12 months: 8hrs/month maintenance · bug fixes · Grafana dashboard updates · Email SLA</td><td class="cost-val">RM 3,500 / month</td><td>Recurring</td></tr>
           <tr><td>8</td><td>AI/ML Phase 2 (Optional)</td><td>Combustion ML model · Predictive maintenance · Steam forecasting (scoped post Phase 1)</td><td class="cost-val">RM 65,000–85,000</td><td>Phase 2</td></tr>
         </tbody>
@@ -761,17 +764,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
       <div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--white);margin-bottom:8px">Ready to transform SteamBytes?</div>
       <p style="font-size:14px;color:var(--t2);max-width:520px;margin:0 auto 20px;line-height:1.65">This demo represents our technical answer to SteamBytes' highest-weighted criterion — dashboard excellence. We are ready to begin Week 1 activities within 5 days of contract execution.</p>
       <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-      
-        
+        <button class="btn-nav" style="padding:11px 28px;font-size:14px" onclick="showToast('Contact: nazmus@steambytes.com · +60145696690')">Schedule Technical Presentation</button>
+        <button style="background:transparent;color:var(--steam);border:1px solid var(--borderHi);padding:11px 28px;border-radius:8px;font-size:14px;cursor:pointer;font-family:'Barlow',sans-serif" onclick="exportProposalPDF()">⬇ Download Full Proposal PDF</button>
       </div>
-      <div style="margin-top:20px;font-size:12px;color:var(--t3)">AriPrus  · info@ariprus.com · ariprus.com</div>
+      <div style="margin-top:20px;font-size:12px;color:var(--t3)">AriPrus Industrial Intelligence · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8ae3e4ece5caebf8e3faf8fff9a4e9e5e7">[email&#160;protected]</a> · ariprus.com</div>
     </div>
   </div>
 </div>
 
 <div class="toast-el" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2,'0');
@@ -1116,7 +1119,629 @@ function startSim(){
   },3000);
 }
 
-// ── TOAST ─────────────────────────────────────────────────────
+// ── EXPORT: TRENDS CSV ─────────────────────────────────────────
+function exportTrendsCSV(){
+  try{
+    const boilerSel = document.querySelector('.tc-input');
+    const boilerName = boilerSel ? boilerSel.value.split('·')[0].trim() : 'JH-PMD-81723';
+    const pts = 48;
+    const headers = ['Time (Hour)','Gas Flow (m³/hr)','O₂ Level (%)','Water Flow (ton/hr)','Steam Pressure (bar)','Steam Flow (ton/hr)','Gas Outlet Temp (°C)'];
+    const rows = Array.from({length:pts},(_,i)=>[
+      `${String(i).padStart(2,'0')}:00`,
+      rand(18,26).toFixed(2), rand(1.5,4.0).toFixed(1),
+      rand(4.5,6.2).toFixed(2), rand(5.0,6.5).toFixed(2),
+      rand(1.1,1.5).toFixed(3), rand(130,150).toFixed(1),
+    ]);
+
+    const csv = [headers, ...rows].map(r=>r.join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SteamBytes_Trends_${boilerName.replace(/\s/g,'_')}_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    showToast('✓ Trend data exported to CSV');
+  } catch(e){ showToast('⚠ Export error: '+e.message); }
+}
+
+// ── EXPORT: PROPOSAL PDF ───────────────────────────────────────
+function exportProposalPDF(){
+  try{
+    const { jsPDF } = window.jspdf;
+    if(!jsPDF){ showToast('⚠ PDF library not loaded yet'); return; }
+
+    const doc = new jsPDF({orientation:'portrait', unit:'mm', format:'a4'});
+    const PW = doc.internal.pageSize.getWidth();
+    const PH = doc.internal.pageSize.getHeight();
+    const DARK=[6,18,28], STEAM=[0,168,200], WHITE=[240,248,255], MID=[90,130,148], BGCARD=[14,28,42];
+    const GREEN=[34,197,94], AMBER=[245,158,11], RED=[239,68,68];
+
+    function pageHeader(doc, pg, total){
+      doc.setFillColor(...DARK); doc.rect(0,0,PW,PH,'F');
+      doc.setFillColor(8,22,36); doc.rect(0,0,PW,20,'F');
+      doc.setFillColor(...STEAM); doc.rect(0,19.5,PW,0.8,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...STEAM);
+      doc.text('SteamBytes',12,11);
+      doc.setFontSize(8); doc.setTextColor(...MID);
+      doc.text('Open-Source Platform Migration · Proposal',12,17);
+      doc.text(`Prepared by AriPrus Industrial Intelligence · April 2026`,PW-12,11,{align:'right'});
+      doc.text(`Page ${pg} of ${total}`,PW-12,17,{align:'right'});
+    }
+
+    function footer(doc){
+      doc.setFillColor(8,22,36); doc.rect(0,PH-10,PW,10,'F');
+      doc.setFillColor(...STEAM); doc.rect(0,PH-10,PW,0.5,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MID);
+      doc.text('SteamBytes / Mechmar Group · CONFIDENTIAL · info@ariprus.com · ariprus.com', PW/2, PH-4, {align:'center'});
+    }
+
+    // ─── PAGE 1: Cover ───
+    pageHeader(doc,1,5);
+
+    doc.setFillColor(0,168,200,0.08);
+    doc.setFillColor(10,30,48); doc.roundedRect(12,26,PW-24,52,3,3,'F');
+    doc.setFillColor(...STEAM); doc.rect(12,26,4,52,'F');
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(22); doc.setTextColor(...WHITE);
+    doc.text('SteamBytes Open-Source',20,42);
+    doc.text('Platform Migration', 20, 54);
+    doc.setFontSize(11); doc.setTextColor(...STEAM);
+    doc.text('Proposal in Response to RFP-SB-2026-OSS', 20, 63);
+    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...MID);
+    doc.text('Prepared by: AriPrus Industrial Intelligence', 20, 71);
+
+    const propMeta = [
+      ['Prepared For', 'SteamBytes / Mechmar Group'],
+      ['RFP Reference', 'SB-RFP-2026-OSS'],
+      ['Point of Contact', 'Nazmus Saquib · nazmus@steambytes.com'],
+      ['Date', 'April 2026'],
+      ['NDA Status', 'Ready to execute on award'],
+    ];
+    propMeta.forEach(([k,v],i)=>{
+      const y = 88 + i*10;
+      doc.setFillColor(...BGCARD); doc.roundedRect(12,y-5,PW-24,9,1,1,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor(...MID);
+      doc.text(k+':', 16, y);
+      doc.setFont('helvetica','normal'); doc.setTextColor(...WHITE);
+      doc.text(v, 65, y);
+    });
+
+    // Headline stats
+    const stats=[['RM 0/month','Platform License Cost'],['16 weeks','Go-Live Timeline'],['3 Sites','Malaysia Deployment'],['< 8 months','Full ROI Payback']];
+    stats.forEach((s,i)=>{
+      const sx=12+i*48, sy=142;
+      doc.setFillColor(...BGCARD); doc.roundedRect(sx,sy,44,22,2,2,'F');
+      doc.setFillColor(...STEAM); doc.rect(sx,sy,44,3,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(13); doc.setTextColor(...STEAM);
+      doc.text(s[0],sx+22,sy+13,{align:'center'});
+      doc.setFontSize(7); doc.setTextColor(...MID);
+      doc.text(s[1],sx+22,sy+19,{align:'center'});
+    });
+
+    footer(doc);
+
+    // ─── PAGE 2: Technical Approach ───
+    doc.addPage();
+    pageHeader(doc,2,5);
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('Technical Approach & Open-Source Stack', 12, 30);
+    doc.setFillColor(...STEAM); doc.rect(12,32.5,PW-24,0.8,'F');
+
+    const stack=[
+      ['TimescaleDB','Replaces ThingWorx database. Time-series PostgreSQL — hypertables optimised for 16 sensor streams.'],
+      ['Grafana OSS','Production-grade dashboard. Fleet overview + boiler detail. Exceeds ThingWorx UI parity.'],
+      ['Apache Kafka / MQTT','Receives Node-RED telemetry. High-throughput message bus — zero changes to sensors or gateway.'],
+      ['Apache Superset','Self-service analytics. Exportable digital logbooks replacing manual boilerman records.'],
+      ['Node-RED Rule Engine','HAZOP safety logic ported as rule flows. Email/SMS PIC notification retained and enhanced.'],
+      ['MLflow + scikit-learn','AI/ML model training, versioning and serving. Phase 2 combustion optimisation.'],
+      ['Keycloak (SSO)','Role-based access for operators, managers, admins. Replaces ThingWorx user management.'],
+      ['Docker Compose','All services containerised on existing Mechmar VPS. Zero new infrastructure cost.'],
+    ];
+    stack.forEach((s,i)=>{
+      const sy=38+i*19;
+      doc.setFillColor(...BGCARD); doc.roundedRect(12,sy,PW-24,17,1.5,1.5,'F');
+      doc.setFillColor(...STEAM); doc.rect(12,sy,3,17,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...STEAM);
+      doc.text(s[0], 18, sy+7);
+      doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...MID);
+      doc.text(s[1], 18, sy+13);
+    });
+
+    footer(doc);
+
+    // ─── PAGE 3: Timeline & Team ───
+    doc.addPage();
+    pageHeader(doc,3,5);
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('Project Timeline & Team', 12, 30);
+    doc.setFillColor(...STEAM); doc.rect(12,32.5,PW-24,0.8,'F');
+
+    const milestones=[
+      ['WEEKS 1–2','Kickoff & Architecture','NDA signed · Data schema documented · Stack deployed on Mechmar VPS · SSL/TLS configured'],
+      ['WEEKS 3–5','M1: Platform Live + Node-RED','Node-RED redirected remotely · All 16 sensors ingested · First live data in Grafana'],
+      ['WEEKS 6–10','M2: Full Dashboard','Fleet Overview · Boiler Detail · Trends · Data Logbook — ThingWorx parity achieved'],
+      ['WEEKS 11–13','M3: HAZOP Safety Logic','All HAZOP rules ported · Email/SMS gateway · Alarm management dashboard live'],
+      ['WEEKS 14–16','M4: UAT + 3 Sites + Handover','Sites 2 & 3 live · Operator training · ThingWorx decommissioned · Sign-off'],
+      ['MONTHS 5–18','Phase 2: AI/ML Delivery','Combustion efficiency model · Predictive maintenance · Steam demand forecasting'],
+    ];
+    milestones.forEach((m,i)=>{
+      const my=38+i*19; const isLast=i===milestones.length-1;
+      doc.setFillColor(...BGCARD); doc.roundedRect(12,my,PW-24,17,1.5,1.5,'F');
+      doc.setFillColor(isLast?[139,92,246]:...(i<4?STEAM:AMBER)); doc.rect(12,my,3,17,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(8);
+      doc.setTextColor(isLast?[180,150,255]:...(i<4?STEAM:AMBER));
+      doc.text(m[0], 18, my+6);
+      doc.setFont('helvetica','bold'); doc.setFontSize(9); doc.setTextColor(...WHITE);
+      doc.text(m[1], 18, my+11);
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...MID);
+      doc.text(m[2], 18, my+15.5);
+    });
+
+    footer(doc);
+
+    // ─── PAGE 4: Commercials ───
+    doc.addPage();
+    pageHeader(doc,4,5);
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('Commercial Terms & Pricing', 12, 30);
+    doc.setFillColor(...STEAM); doc.rect(12,32.5,PW-24,0.8,'F');
+
+    const costRows=[
+      ['1','Platform Configuration','TimescaleDB · Grafana · Kafka · Node-RED integration · SSL/TLS','RM 28,000','One-time'],
+      ['2','Dashboard Development','Fleet Overview · Boiler Detail · Trends · Data Logbook','RM 45,000','One-time'],
+      ['3','HAZOP Safety Logic','All rules migrated · Email/SMS alerting · Alarm dashboard','RM 18,000','One-time'],
+      ['4','3-Site Deployment + Training','Remote update + on-site training (JB, KL, Penang)','RM 22,000','One-time'],
+      ['5','AI/ML Phase 1 Roadmap','Data readiness · Baseline model · MLflow setup','RM 38,000','One-time'],
+      ['','TOTAL PHASE 1','','RM 151,000',''],
+      ['6','IoT Platform License','Open-source — no vendor fees ever','RM 0/month','Recurring'],
+      ['7','Post-Dev Support SLA','8hrs/month maintenance + bug fixes + dashboard updates','RM 3,500/month','Recurring'],
+      ['8','AI/ML Phase 2 (Optional)','Combustion ML · Predictive maintenance · Forecasting','RM 65,000–85,000','Phase 2'],
+    ];
+    doc.autoTable({
+      startY: 37,
+      head:[['#','Line Item','Description','Cost (MYR)','Type']],
+      body: costRows,
+      theme:'plain',
+      styles:{font:'helvetica',fontSize:8.5,cellPadding:{top:3,right:4,bottom:3,left:4},textColor:[200,220,230],lineColor:[20,50,70],lineWidth:0.3},
+      headStyles:{fillColor:[8,22,36],textColor:[0,168,200],fontStyle:'bold',fontSize:8,lineColor:[0,168,200],lineWidth:0.4},
+      alternateRowStyles:{fillColor:[12,28,44]},
+      bodyStyles:{fillColor:[10,20,34]},
+      columnStyles:{0:{cellWidth:8},1:{cellWidth:42},2:{cellWidth:70},3:{cellWidth:30},4:{cellWidth:22}},
+      didParseCell:(d)=>{
+        if(d.row.index===5){d.cell.styles.fontStyle='bold';d.cell.styles.textColor=[0,168,200];d.cell.styles.fillColor=[6,30,50];}
+      },
+      margin:{left:12,right:12},
+    });
+
+    // Payment terms box
+    const ptY = doc.lastAutoTable.finalY + 8;
+    doc.setFillColor(...BGCARD); doc.roundedRect(12,ptY,PW-24,22,2,2,'F');
+    doc.setFillColor(...STEAM); doc.rect(12,ptY,PW-24,4,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(8); doc.setTextColor([255,255,255]);
+    doc.text('PAYMENT TERMS', 16, ptY+3);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MID);
+    doc.text('30% on contract signing  ·  40% at M2 (Dashboard UAT sign-off)  ·  30% at M4 (Production go-live)', 16, ptY+11);
+    doc.text('12-month warranty included  ·  Support contract optional from Month 4  ·  All prices in MYR excluding GST', 16, ptY+17);
+
+    footer(doc);
+
+    // ─── PAGE 5: ROI & Next Steps ───
+    doc.addPage();
+    pageHeader(doc,5,5);
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.setTextColor(...WHITE);
+    doc.text('ROI Analysis & Next Steps', 12, 30);
+    doc.setFillColor(...STEAM); doc.rect(12,32.5,PW-24,0.8,'F');
+
+    const roiItems=[
+      ['RM 0/month','Platform License Cost','Open-source replaces ThingWorx licensing forever'],
+      ['3–5%','Fuel Efficiency Gain','Via AI/ML combustion optimisation (Phase 2)'],
+      ['RM 255K+','Annual Fuel Saving','3 sites · 3–5% efficiency gain at current fuel costs'],
+      ['< 8 months','Full ROI Payback','Phase 1 + Phase 2 combined investment recovered'],
+    ];
+    roiItems.forEach((r,i)=>{
+      const rx=12+(i%2)*96, ry=38+(Math.floor(i/2)*32);
+      doc.setFillColor(...BGCARD); doc.roundedRect(rx,ry,92,28,2,2,'F');
+      doc.setFillColor(...STEAM); doc.rect(rx,ry,92,4,'F');
+      doc.setFont('helvetica','bold'); doc.setFontSize(16); doc.setTextColor(...STEAM);
+      doc.text(r[0],rx+46,ry+16,{align:'center'});
+      doc.setFontSize(8); doc.setTextColor(...WHITE);
+      doc.text(r[1],rx+46,ry+22,{align:'center'});
+      doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...MID);
+      doc.text(r[2],rx+46,ry+27,{align:'center'});
+    });
+
+    // TCO comparison table
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(...WHITE);
+    doc.text('5-Year TCO: ThingWorx vs AriPrus Open-Source Stack', 12, 108);
+    doc.autoTable({
+      startY:112,
+      head:[['Year','ThingWorx (RM\'000)','AriPrus Stack (RM\'000)','Annual Saving (RM\'000)']],
+      body:[['Year 1','320','195 (one-time + support)','125'],['Year 2','340','42 (support only)','298'],['Year 3','360','42','318'],['Year 4','380','42','338'],['Year 5','400','42','358'],['TOTAL 5-YEAR','1,800','363','1,437']],
+      theme:'plain',
+      styles:{font:'helvetica',fontSize:9,cellPadding:{top:3,right:6,bottom:3,left:6},textColor:[200,220,230],lineColor:[20,50,70],lineWidth:0.3},
+      headStyles:{fillColor:[8,22,36],textColor:[0,168,200],fontStyle:'bold',fontSize:8.5},
+      alternateRowStyles:{fillColor:[12,28,44]},
+      bodyStyles:{fillColor:[10,20,34]},
+      columnStyles:{3:{textColor:[34,197,94],fontStyle:'bold'}},
+      didParseCell:(d)=>{if(d.row.index===5){d.cell.styles.fontStyle='bold';d.cell.styles.fillColor=[6,30,50];d.cell.styles.textColor=[0,168,200];}},
+      margin:{left:12,right:12},
+    });
+
+    // Next steps
+    const nsY = doc.lastAutoTable.finalY + 8;
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+    doc.text('Next Steps', 12, nsY);
+    const steps=['1. Execute NDA — AriPrus NDA template provided within 24h of verbal confirmation','2. Kickoff call — Architecture review + Node-RED connectivity plan (Week 1)','3. Contract execution — 30% mobilisation payment triggers Week 1 activities','4. Platform live in 5 weeks — First live sensor data in Grafana from wilmar (JB) site'];
+    steps.forEach((s,i)=>{
+      const sy=nsY+6+i*9;
+      doc.setFillColor(...BGCARD); doc.roundedRect(12,sy-4,PW-24,8,1,1,'F');
+      doc.setFillColor(...STEAM); doc.rect(12,sy-4,2.5,8,'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MID);
+      doc.text(s,17,sy);
+    });
+
+    // CTA
+    const ctaY=nsY+46;
+    doc.setFillColor(8,40,60); doc.roundedRect(12,ctaY,PW-24,24,3,3,'F');
+    doc.setFillColor(...STEAM); doc.rect(12,ctaY,PW-24,4,'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...WHITE);
+    doc.text('Ready to transform SteamBytes?',PW/2,ctaY+12,{align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...MID);
+    doc.text('Nazmus Saquib: nazmus@steambytes.com · +60145696690 (WhatsApp)  |  AriPrus: info@ariprus.com',PW/2,ctaY+19,{align:'center'});
+
+    footer(doc);
+
+    doc.save('SteamBytes_AriPrus_Proposal_2026.pdf');
+    showToast('✓ Full 5-page proposal PDF downloaded');
+  } catch(e){
+    console.error(e);
+    showToast('⚠ PDF error: '+e.message);
+  }
+}
+
+// ── EXPORT: EXCEL ─────────────────────────────────────────────
+function exportExcel(){
+  try{
+    const table = $('dataTable');
+    if(!table){ showToast('⚠ No data to export yet — open Data Log tab first'); return; }
+
+    // Extract headers
+    const headers = Array.from(table.querySelectorAll('thead th')).map(th=>th.innerText.trim().replace(/\n/g,' '));
+
+    // Extract rows
+    const rows = Array.from(table.querySelectorAll('tbody tr')).map(tr=>
+      Array.from(tr.querySelectorAll('td')).map(td=>td.innerText.trim())
+    );
+
+    // Get selected boiler + date info
+    const boilerSel = document.querySelector('.dc-select');
+    const boilerName = boilerSel ? boilerSel.value||'JH-PMD-81723' : 'JH-PMD-81723';
+    const dateInput  = document.querySelectorAll('.dc-select')[1];
+    const dateStr    = dateInput ? dateInput.value||'2026-02-12' : '2026-02-12';
+
+    // Create workbook
+    const wb = XLSX.utils.book_new();
+
+    // ── Sheet 1: Operational Data ──
+    const wsData = [headers, ...rows];
+    const ws1 = XLSX.utils.aoa_to_sheet(wsData);
+
+    // Column widths
+    ws1['!cols'] = headers.map((_,i)=>({wch: i===0?20:14}));
+
+    // Style header row (note: basic xlsx doesn't support cell styles without pro plugins — we mark with comment)
+    XLSX.utils.book_append_sheet(wb, ws1, 'Operational Data');
+
+    // ── Sheet 2: Summary ──
+    const boiler = BOILERS[parseInt($('boilerSelect')?.value||0)];
+    const summaryRows = [
+      ['SteamBytes — Boiler Operational Report','',''],
+      ['','',''],
+      ['Site', boiler.site, ''],
+      ['Boiler ID', boiler.name, ''],
+      ['Location', boiler.loc, ''],
+      ['Boiler Model', boiler.model, ''],
+      ['Serial Number', boiler.serial, ''],
+      ['Rated Capacity', boiler.cap, ''],
+      ['Rated Pressure', boiler.press, ''],
+      ['Report Date', dateStr, ''],
+      ['Export Time', new Date().toLocaleString(), ''],
+      ['','',''],
+      ['LIVE READINGS AT EXPORT','',''],
+      ['Efficiency (%)', boiler.eff+'%', ''],
+      ['Steam Flow Rate (ton/hr)', boiler.steam.flow, ''],
+      ['Steam Pressure (bar)', boiler.steam.pressure, ''],
+      ['Gas Flow Rate (m³/hr)', boiler.fuel.flow, ''],
+      ['O₂ Level (%)', boiler.fuel.o2, ''],
+      ['CO Level (ppm)', boiler.fuel.co, ''],
+      ['Water Level (%)', boiler.water.level, ''],
+      ['Water Temperature (°C)', boiler.water.temp, ''],
+      ['Eco Gas Outlet (°C)', boiler.eco.gasOut, ''],
+      ['Eco Gas Inlet (°C)', boiler.eco.gasIn, ''],
+      ['Burner Running Hours', boiler.burnerHrs, ''],
+      ['','',''],
+      ['ACTIVE ALARMS','',''],
+      ...boiler.alarms.map(a=>[a.name, a.active?'ACTIVE':'CLEAR', '']),
+      ['','',''],
+      ['Generated by SteamBytes Open-Source Platform · Powered by AriPrus','',''],
+    ];
+    const ws2 = XLSX.utils.aoa_to_sheet(summaryRows);
+    ws2['!cols'] = [{wch:35},{wch:22},{wch:10}];
+    XLSX.utils.book_append_sheet(wb, ws2, 'Summary');
+
+    // ── Sheet 3: All Sites Overview ──
+    const overviewHeaders = ['Site','Boiler ID','Location','Efficiency (%)','Steam Flow (t/hr)','Steam Pressure (bar)','O₂ Level (%)','CO Level (ppm)','Water Level (%)','Status'];
+    const overviewRows = BOILERS.map(b=>[b.site, b.name, b.loc, b.eff+'%', b.steam.flow, b.steam.pressure, b.fuel.o2, b.fuel.co, b.water.level, b.status.toUpperCase()]);
+    const ws3 = XLSX.utils.aoa_to_sheet([overviewHeaders, ...overviewRows]);
+    ws3['!cols'] = overviewHeaders.map((_,i)=>({wch:i===0?18:16}));
+    XLSX.utils.book_append_sheet(wb, ws3, 'Fleet Overview');
+
+    // Write file
+    const filename = `SteamBytes_Log_${boiler.name}_${dateStr.replace(/-/g,'')}.xlsx`;
+    XLSX.writeFile(wb, filename);
+    showToast('✓ Excel exported — ' + filename);
+  } catch(e){
+    console.error(e);
+    showToast('⚠ Export error: ' + e.message);
+  }
+}
+
+// ── EXPORT: PDF ────────────────────────────────────────────────
+function exportPDF(){
+  try{
+    const { jsPDF } = window.jspdf;
+    if(!jsPDF){ showToast('⚠ PDF library not loaded yet — please wait a moment'); return; }
+
+    const boilerIdx = parseInt($('boilerSelect')?.value||0);
+    const boiler    = BOILERS[boilerIdx];
+    const dateStr   = document.querySelectorAll('.dc-select')[1]?.value || '2026-02-12';
+    const now       = new Date();
+
+    const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:'a4' });
+    const PW = doc.internal.pageSize.getWidth();
+    const PH = doc.internal.pageSize.getHeight();
+
+    // ── Helper colours ──
+    const DARK  = [6, 20, 30];
+    const STEAM = [0, 168, 200];
+    const WHITE = [240, 248, 255];
+    const MID   = [90, 130, 148];
+    const GREEN = [34, 197, 94];
+    const AMBER = [245, 158, 11];
+    const RED   = [239, 68, 68];
+    const BGCARD= [16, 32, 48];
+
+    // ──── PAGE 1: Header + Summary ────
+    // Dark header band
+    doc.setFillColor(...DARK);
+    doc.rect(0, 0, PW, PH, 'F');
+
+    // Top header bar
+    doc.setFillColor(8, 28, 44);
+    doc.rect(0, 0, PW, 26, 'F');
+    doc.setFillColor(...STEAM);
+    doc.rect(0, 25.5, PW, 1, 'F');
+
+    // SteamBytes logo text
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(18);
+    doc.setTextColor(...STEAM);
+    doc.text('SteamBytes', 12, 14);
+    doc.setFontSize(9);
+    doc.setTextColor(...MID);
+    doc.text('Efficiency Elevated · Open-Source Platform', 12, 20);
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...MID);
+    doc.text('Powered by AriPrus Industrial Intelligence', PW-12, 10, {align:'right'});
+    doc.text(`Generated: ${now.toLocaleString()}`, PW-12, 16, {align:'right'});
+    doc.text(`Report Date: ${dateStr}`, PW-12, 22, {align:'right'});
+
+    // Report title
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(14);
+    doc.setTextColor(...WHITE);
+    doc.text('Boiler Operational Report', 12, 38);
+    doc.setFontSize(10);
+    doc.setTextColor(...STEAM);
+    doc.text(`${boiler.site} · ${boiler.name} · ${boiler.loc}`, 12, 45);
+
+    // ── Boiler info card ──
+    const infoY = 52;
+    doc.setFillColor(...BGCARD);
+    doc.roundedRect(10, infoY, 85, 52, 2, 2, 'F');
+    doc.setFillColor(...STEAM);
+    doc.rect(10, infoY, 3, 52, 'F');
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...STEAM);
+    doc.text('BOILER INFORMATION', 16, infoY+6);
+
+    const infoFields = [
+      ['Model', boiler.model], ['Serial', boiler.serial],
+      ['Rated Capacity', boiler.cap], ['Rated Pressure', boiler.press],
+      ['Burner Hours', boiler.burnerHrs], ['Status', boiler.status.toUpperCase()],
+    ];
+    infoFields.forEach(([k,v],i)=>{
+      const fy = infoY + 12 + i*7;
+      doc.setFont('helvetica','normal');
+      doc.setFontSize(8); doc.setTextColor(...MID);
+      doc.text(k+':', 16, fy);
+      doc.setFont('helvetica','bold');
+      doc.setTextColor(...WHITE);
+      doc.text(String(v), 50, fy);
+    });
+
+    // ── Efficiency gauge ──
+    const effX = 56, effY = infoY + 28;
+    const effColor = boiler.eff>=85?GREEN:boiler.eff>=75?AMBER:RED;
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(22);
+    doc.setTextColor(...effColor);
+    doc.text(boiler.eff+'%', effX, effY, {align:'center'});
+    doc.setFontSize(7);
+    doc.setTextColor(...MID);
+    doc.text('Efficiency', effX, effY+5, {align:'center'});
+
+    // ── Sensor group mini cards ──
+    const sensorGroups = [
+      { title:'FUEL', color:[255,107,43], metrics:[
+        {l:'Flow Rate',v:boiler.fuel.flow,u:'m³/hr'},
+        {l:'O₂ Level',v:boiler.fuel.o2,u:'%'},
+        {l:'CO Level',v:boiler.fuel.co,u:'ppm'},
+        {l:'Totalizer',v:boiler.fuel.total.toLocaleString(),u:'m³'},
+      ]},
+      { title:'WATER', color:[0,168,200], metrics:[
+        {l:'Flow Rate',v:boiler.water.flow,u:'ton/hr'},
+        {l:'Water Level',v:boiler.water.level,u:'%'},
+        {l:'Temperature',v:boiler.water.temp,u:'°C'},
+        {l:'Totalizer',v:boiler.water.total.toLocaleString(),u:'ton'},
+      ]},
+      { title:'STEAM', color:[139,92,246], metrics:[
+        {l:'Flow Rate',v:boiler.steam.flow,u:'ton/hr'},
+        {l:'Pressure',v:boiler.steam.pressure,u:'bar'},
+        {l:'Totalizer',v:boiler.steam.total,u:'ton'},
+        {l:'Efficiency',v:boiler.eff,u:'%'},
+      ]},
+      { title:'ECONOMISER', color:[34,197,94], metrics:[
+        {l:'Gas Outlet',v:boiler.eco.gasOut,u:'°C'},
+        {l:'Gas Inlet',v:boiler.eco.gasIn,u:'°C'},
+        {l:'Water In',v:boiler.eco.waterIn,u:'°C'},
+        {l:'Water Out',v:boiler.eco.waterOut,u:'°C'},
+      ]},
+    ];
+
+    sensorGroups.forEach((sg,i)=>{
+      const gx = 10 + i * 66;
+      const gy = infoY + 56;
+      doc.setFillColor(...BGCARD);
+      doc.roundedRect(gx, gy, 63, 46, 2, 2, 'F');
+      doc.setFillColor(...sg.color);
+      doc.rect(gx, gy, 63, 7, 'F');
+      doc.setFont('helvetica','bold');
+      doc.setFontSize(7.5); doc.setTextColor(255,255,255);
+      doc.text(sg.title, gx+4, gy+4.8);
+      sg.metrics.forEach((m,j)=>{
+        const my = gy + 12 + j*8;
+        doc.setFont('helvetica','normal');
+        doc.setFontSize(7); doc.setTextColor(...MID);
+        doc.text(m.l, gx+4, my);
+        doc.setFont('helvetica','bold');
+        doc.setTextColor(...sg.color);
+        doc.text(String(m.v)+' '+m.u, gx+32, my);
+      });
+    });
+
+    // ── Active Alarms box ──
+    const almY = 172;
+    doc.setFillColor(...BGCARD);
+    doc.roundedRect(10, almY, 273, 22, 2, 2, 'F');
+    doc.setFillColor(80,16,28);
+    doc.rect(10, almY, 273, 7, 'F');
+    doc.setFont('helvetica','bold'); doc.setFontSize(7.5);
+    doc.setTextColor(...RED);
+    doc.text('ALARM STATUS', 14, almY+4.8);
+    boiler.alarms.forEach((a,i)=>{
+      const ax = 14 + i*92;
+      doc.setFillColor(a.active?[80,20,20]:[16,40,32]);
+      doc.roundedRect(ax, almY+8, 88, 10, 1, 1, 'F');
+      doc.setFont('helvetica','normal'); doc.setFontSize(7);
+      doc.setTextColor(a.active?...RED:...MID);
+      doc.text((a.active?'⚠ ':' ✓ ')+a.name, ax+3, almY+14.5);
+    });
+
+    // Footer line
+    doc.setFillColor(10,25,38);
+    doc.rect(0, PH-8, PW, 8, 'F');
+    doc.setFillColor(...STEAM);
+    doc.rect(0, PH-8, PW, 0.5, 'F');
+    doc.setFont('helvetica','normal'); doc.setFontSize(7);
+    doc.setTextColor(...MID);
+    doc.text('SteamBytes Open-Source Platform · Powered by AriPrus · ariprus.com', PW/2, PH-3.5, {align:'center'});
+    doc.text('Page 1 of 2', PW-10, PH-3.5, {align:'right'});
+
+    // ──── PAGE 2: Data Table ────
+    doc.addPage('a4','landscape');
+
+    doc.setFillColor(...DARK);
+    doc.rect(0, 0, PW, PH, 'F');
+
+    doc.setFillColor(8,28,44);
+    doc.rect(0, 0, PW, 18, 'F');
+    doc.setFillColor(...STEAM);
+    doc.rect(0, 17.5, PW, 0.8, 'F');
+
+    doc.setFont('helvetica','bold'); doc.setFontSize(13);
+    doc.setTextColor(...STEAM);
+    doc.text('SteamBytes', 12, 10);
+    doc.setFontSize(9); doc.setTextColor(...MID);
+    doc.text(`Operational Data Log · ${boiler.site} · ${dateStr}`, 12, 16);
+    doc.setFontSize(8); doc.setTextColor(...MID);
+    doc.text(`Exported: ${now.toLocaleString()}`, PW-12, 10, {align:'right'});
+    doc.text('Page 2 of 2', PW-12, 16, {align:'right'});
+
+    // Extract table data from DOM
+    const tableEl = $('dataTable');
+    const pdfHeaders = tableEl
+      ? Array.from(tableEl.querySelectorAll('thead th')).map(th=>th.innerText.trim().replace(/\n/g,' '))
+      : ['Time','Gas Flow','O₂ %','CO ppm','CO₂ ppm','Water Flow','Water Level','Steam Flow','Pressure','Eco GasOut','Eco GasIn','Water In','Water Out','Eff%'];
+
+    const pdfRows = tableEl
+      ? Array.from(tableEl.querySelectorAll('tbody tr')).map(tr=>Array.from(tr.querySelectorAll('td')).map(td=>td.innerText.trim()))
+      : [];
+
+    doc.autoTable({
+      startY: 22,
+      head: [pdfHeaders],
+      body: pdfRows,
+      theme: 'plain',
+      styles:{
+        font:'helvetica', fontSize:7.5,
+        cellPadding:{top:2.5,right:3,bottom:2.5,left:3},
+        textColor:[200,220,230],
+        lineColor:[20,50,70], lineWidth:0.3,
+        overflow:'linebreak',
+      },
+      headStyles:{
+        fillColor:[8,28,44],
+        textColor:[0,168,200],
+        fontStyle:'bold', fontSize:7,
+        lineColor:[0,168,200], lineWidth:0.4,
+      },
+      alternateRowStyles:{fillColor:[12,28,42]},
+      bodyStyles:{fillColor:[10,20,32]},
+      columnStyles: Object.fromEntries(pdfHeaders.map((_,i)=>
+        [i, {cellWidth: i===0?28:i===pdfHeaders.length-1?12:18}]
+      )),
+      margin:{left:8, right:8, top:22},
+      didDrawPage:(data)=>{
+        // footer on each page
+        doc.setFillColor(10,25,38);
+        doc.rect(0, PH-8, PW, 8, 'F');
+        doc.setFillColor(...STEAM);
+        doc.rect(0, PH-8, PW, 0.5, 'F');
+        doc.setFont('helvetica','normal'); doc.setFontSize(7);
+        doc.setTextColor(...MID);
+        doc.text('SteamBytes Open-Source Platform · Powered by AriPrus · ariprus.com', PW/2, PH-3.5, {align:'center'});
+      }
+    });
+
+    const filename = `SteamBytes_Report_${boiler.name}_${dateStr.replace(/-/g,'')}.pdf`;
+    doc.save(filename);
+    showToast('✓ PDF report downloaded — ' + filename);
+  } catch(e){
+    console.error(e);
+    showToast('⚠ PDF error: ' + e.message);
+  }
+}
+
+
 let tt;
 function showToast(m){
   let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:20px;right:20px;z-index:600;background:#102030;border:1px solid rgba(0,200,232,.3);border-radius:9px;padding:11px 16px;font-size:13px;color:#00C8E8;box-shadow:0 4px 24px rgba(0,0,0,.5);transform:translateY(120%);transition:transform .3s;max-width:280px;font-family:Barlow,sans-serif';document.body.appendChild(t);}
@@ -1124,16 +1749,4 @@ function showToast(m){
 }
 
 // ── BOOT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded',()=>{
-  buildFleet();
-  renderDetail();
-  buildDataTable();
-  buildHazop();
-  startSim();
-});
-
-// Lazy range btn clicks
-document.addEventListener('click',e=>{if(e.target.classList.contains('range-btn')){document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));e.target.classList.add('active');}});
-</script>
-</body>
-</html>
+document.addEventListener('DOMContentLoade

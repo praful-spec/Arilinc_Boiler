@@ -3,769 +3,1137 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>AriPrus — Industrial AI Platform</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<title>SteamBytes — AriLinc Platform Demo | By AriPrus</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Barlow+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
-/* ═══════════════════════════════════════════════════
-   AriPrus · Industrial AI · Dark Precision Theme
-   Bebas Neue (display) + Outfit (body) + DM Mono (data)
-═══════════════════════════════════════════════════ */
 :root{
-  --ink:     #060A0D;
-  --ink2:    #0B1318;
-  --ink3:    #101C22;
-  --card:    #131E24;
-  --cardHi:  #192830;
-  --neon:    #00E5A0;
-  --neonDim: #007A52;
-  --neonBg:  rgba(0,229,160,.07);
-  --red:     #C8102E;
-  --redBg:   rgba(200,16,46,.08);
-  --amber:   #E8A000;
-  --sky:     #38BDF8;
-  --white:   #E8F2EF;
-  --t1:      #C4DDD6;
-  --t2:      #6A9487;
-  --t3:      #3A5C52;
-  --b1:      rgba(0,229,160,.1);
-  --b2:      rgba(0,229,160,.22);
-  --shadow:  0 8px 40px rgba(0,0,0,.6);
-  --nav-h:   66px;
+--bg:#060D12;--bg2:#0A1520;--bg3:#0E1D2A;--card:#102030;--cardHi:#16293A;
+--steam:#00C8E8;--steamDim:#007A8F;--steamBg:rgba(0,200,232,.1);
+--orange:#FF6B2B;--orangeBg:rgba(255,107,43,.1);
+--green:#22C55E;--greenBg:rgba(34,197,94,.1);
+--amber:#F59E0B;--amberBg:rgba(245,158,11,.1);
+--red:#EF4444;--redBg:rgba(239,68,68,.1);
+--white:#E8F4F8;--t1:#B8D4E0;--t2:#6A96A8;--t3:#3A5A6A;
+--border:rgba(0,200,232,.12);--borderHi:rgba(0,200,232,.3);
+--shadow:0 4px 24px rgba(0,0,0,.5);
+--nav-h:58px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;scroll-behavior:smooth}
-body{font-family:'Outfit',sans-serif;background:var(--ink);color:var(--t1);overflow-x:hidden;line-height:1.6}
-::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--ink2)}::-webkit-scrollbar-thumb{background:var(--neonDim);border-radius:2px}
+body{font-family:'Barlow',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.5}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:var(--bg2)}::-webkit-scrollbar-thumb{background:var(--steamDim);border-radius:2px}
 
-/* ── GRID BG ── */
-.grid-bg{position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:linear-gradient(rgba(0,229,160,.03) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,229,160,.03) 1px,transparent 1px);
-  background-size:72px 72px}
-.grid-bg::after{content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(0,229,160,.05) 0%,transparent 60%)}
+/* ── NAV ─────────────────────────────────────────────────── */
+nav{position:fixed;top:0;left:0;right:0;z-index:300;height:var(--nav-h);
+background:rgba(6,13,18,.95);backdrop-filter:blur(16px);
+border-bottom:1px solid var(--border)}
+.nav-w{max-width:1440px;margin:0 auto;height:var(--nav-h);display:flex;align-items:center;padding:0 20px;gap:0}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;margin-right:16px}
+.logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--steam),var(--steamDim));border-radius:8px;display:grid;place-items:center;font-size:16px}
+.logo-text{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--white);letter-spacing:.5px}
+.logo-sub{font-size:10px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.nav-tabs{display:flex;gap:2px;flex-wrap:nowrap;overflow-x:auto}
+.nav-tab{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;color:var(--t2);cursor:pointer;border:none;background:none;font-family:'Barlow',sans-serif;white-space:nowrap;transition:all .2s}
+.nav-tab:hover{color:var(--white);background:rgba(255,255,255,.05)}
+.nav-tab.active{color:var(--steam);background:var(--steamBg);font-weight:600}
+.nav-tab.tab-proposal.active{color:var(--orange);background:var(--orangeBg)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.nav-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t2)}
+.live-badge{display:flex;align-items:center;gap:5px;padding:3px 10px;background:var(--greenBg);border:1px solid rgba(34,197,94,.25);border-radius:100px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--green)}
+.blink{width:5px;height:5px;border-radius:50%;background:var(--green);animation:blink 1.4s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.btn-nav{background:var(--steam);color:var(--bg);border:none;padding:6px 14px;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Barlow',sans-serif;transition:all .2s}
+.btn-nav:hover{background:#00E8FF;transform:translateY(-1px)}
 
-/* ── NAV ── */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);
-  background:rgba(6,10,13,.92);backdrop-filter:blur(20px) saturate(1.6);
-  border-bottom:1px solid var(--b1)}
-.nav-w{max-width:1360px;margin:0 auto;height:var(--nav-h);display:flex;align-items:center;padding:0 32px;gap:0}
-.nav-brand{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0}
-.brand-logo{width:36px;height:36px;background:var(--neon);border-radius:8px;display:grid;place-items:center}
-.brand-logo svg{width:20px;height:20px}
-.brand-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--white)}
-.brand-dot{color:var(--neon)}
-.nav-links{display:flex;gap:4px;margin-left:40px}
-.nl{text-decoration:none;color:var(--t2);font-size:13px;font-weight:500;padding:6px 13px;border-radius:7px;transition:all .2s;cursor:pointer;border:none;background:none;font-family:'Outfit',sans-serif}
-.nl:hover{color:var(--white);background:rgba(255,255,255,.05)}
-.nl.active{color:var(--neon);background:var(--neonBg)}
-.nav-ticker{margin-left:auto;display:flex;align-items:center;gap:20px}
-.ticker-item{display:flex;align-items:center;gap:7px;font-size:11px;font-family:'DM Mono',monospace}
-.ticker-dot{width:5px;height:5px;border-radius:50%;background:var(--neon);animation:pulse 1.6s infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-.ticker-val{color:var(--neon);font-weight:500}
-.ticker-lbl{color:var(--t3)}
-.btn-cta-nav{background:var(--neon);color:var(--ink);border:none;padding:8px 20px;border-radius:7px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;margin-left:20px}
-.btn-cta-nav:hover{transform:translateY(-1px);box-shadow:0 6px 24px rgba(0,229,160,.3)}
+/* ── VIEWS ────────────────────────────────────────────────── */
+.view{display:none;padding:calc(var(--nav-h) + 16px) 20px 40px}
+.view.active{display:block}
+.view-inner{max-width:1440px;margin:0 auto}
 
-/* ── HERO ── */
-#hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:calc(var(--nav-h)+80px) 32px 80px;overflow:hidden;z-index:1}
-.hero-w{max-width:1360px;margin:0 auto;width:100%}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:5px 14px 5px 8px;background:var(--redBg);border:1px solid rgba(200,16,46,.25);border-radius:100px;margin-bottom:28px}
-.eyebrow-pip{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0}
-.eyebrow-txt{font-family:'DM Mono',monospace;font-size:11px;color:#F07080;letter-spacing:.5px}
-.hero-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,10vw,148px);line-height:.90;color:var(--white);letter-spacing:1px;margin-bottom:0}
-.hero-h1 .accent{color:var(--neon)}
-.hero-h1 .sub-line{display:block;font-size:clamp(48px,6.5vw,96px);color:var(--t2)}
-.hero-rule{width:120px;height:2px;background:var(--neon);margin:32px 0}
-.hero-desc{font-size:17px;font-weight:300;color:var(--t2);max-width:560px;line-height:1.75;margin-bottom:44px}
-.hero-actions{display:flex;gap:14px;flex-wrap:wrap}
-.btn-primary{background:var(--neon);color:var(--ink);border:none;padding:14px 32px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:.3px}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,229,160,.35)}
-.btn-ghost{background:transparent;color:var(--neon);border:1px solid var(--b2);padding:14px 32px;border-radius:9px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:500;cursor:pointer;transition:all .2s}
-.btn-ghost:hover{background:var(--neonBg);transform:translateY(-2px)}
-/* Hero stat strip */
-.hero-stats{margin-top:72px;display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:1px solid var(--b1);border-radius:14px;overflow:hidden;background:var(--ink2)}
-.hs{padding:24px 28px;border-right:1px solid var(--b1)}
-.hs:last-child{border-right:none}
-.hs-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:var(--neon);line-height:1;letter-spacing:.5px}
-.hs-lbl{font-size:13px;color:var(--t2);margin-top:4px}
-/* Hero floating data panel */
-.hero-float{position:absolute;right:32px;top:50%;transform:translateY(-40%);width:340px}
-@media(max-width:1200px){.hero-float{display:none}}
-.hf-panel{background:var(--card);border:1px solid var(--b1);border-radius:16px;overflow:hidden}
-.hf-header{padding:14px 18px;background:var(--ink3);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between}
-.hf-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px}
-.hf-live{display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:9px;color:var(--neon)}
-.hf-body{padding:14px}
-.hf-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,229,160,.06);font-size:12px}
-.hf-row:last-child{border-bottom:none}
-.hf-sensor{color:var(--t2)}
-.hf-val{font-family:'DM Mono',monospace;color:var(--neon);font-weight:500}
-.hf-bar-wrap{height:3px;background:rgba(255,255,255,.07);border-radius:2px;margin:10px 0 4px;overflow:hidden}
-.hf-bar{height:100%;background:linear-gradient(90deg,var(--neonDim),var(--neon));border-radius:2px}
+/* ── SHARED PRIMITIVES ────────────────────────────────────── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px}
+.card-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--t3)}
+.card-body{padding:14px 16px}
+.sect-hdr{margin-bottom:20px}
+.sect-tag{font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--steam);margin-bottom:6px}
+.sect-h{font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--white);letter-spacing:.3px;margin-bottom:4px}
+.sect-sub{font-size:13px;color:var(--t2)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.g23{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+.g32{display:grid;grid-template-columns:1.5fr 1fr;gap:14px}
+.col{display:flex;flex-direction:column;gap:14px}
+.mb2{margin-bottom:8px}.mb3{margin-bottom:12px}.mb4{margin-bottom:16px}.mb5{margin-bottom:20px}
+.badge{font-family:'JetBrains Mono',monospace;font-size:9px;padding:2px 7px;border-radius:100px}
+.badge-live{background:var(--greenBg);color:var(--green);animation:blink 1.4s infinite}
+.badge-steam{background:var(--steamBg);color:var(--steam)}
+.badge-warn{background:var(--amberBg);color:var(--amber)}
 
-/* ── SECTIONS ── */
-section{position:relative;z-index:1}
-.section-w{max-width:1360px;margin:0 auto;padding:0 32px}
-.sec-eyebrow{font-family:'DM Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--neon);margin-bottom:10px}
-.sec-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,5vw,72px);color:var(--white);letter-spacing:.5px;line-height:.95;margin-bottom:14px}
-.sec-sub{font-size:15px;color:var(--t2);max-width:580px;line-height:1.7;margin-bottom:52px;font-weight:300}
+/* ── FLEET VIEW ────────────────────────────────────────────── */
+.fleet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:20px}
+.boiler-card{background:var(--card);border:1px solid var(--border);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .25s}
+.boiler-card:hover{border-color:var(--borderHi);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,.5)}
+.boiler-card.online{border-left:3px solid var(--green)}
+.boiler-card.warning{border-left:3px solid var(--amber);animation:warnPulse 2s ease-in-out infinite}
+.boiler-card.offline{border-left:3px solid var(--t3)}
+@keyframes warnPulse{0%,100%{box-shadow:0 0 0 0 rgba(245,158,11,0)}50%{box-shadow:0 0 0 4px rgba(245,158,11,.15)}}
+.bc-top{padding:14px 16px;display:flex;justify-content:space-between;align-items:flex-start}
+.bc-name{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--white)}
+.bc-model{font-size:11px;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:1px}
+.status-chip{font-size:9px;font-family:'JetBrains Mono',monospace;padding:3px 8px;border-radius:100px;font-weight:600}
+.sc-online{background:var(--greenBg);color:var(--green)}
+.sc-warning{background:var(--amberBg);color:var(--amber)}
+.sc-offline{background:rgba(58,90,106,.2);color:var(--t3)}
+.bc-eff{padding:6px 16px 14px;display:flex;align-items:center;gap:16px}
+.eff-ring{position:relative;width:72px;height:72px;flex-shrink:0}
+.eff-ring svg{width:100%;height:100%}
+.eff-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.eff-val{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;line-height:1}
+.eff-lbl{font-size:8px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.bc-metrics{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.bc-met{background:var(--bg3);border-radius:6px;padding:6px 8px}
+.bm-val{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.bm-lbl{font-size:9px;color:var(--t3);margin-top:1px}
+.bc-alarms{padding:8px 16px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.alarm-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.alarm-item{display:flex;align-items:center;gap:5px;font-size:10px}
+.alarm-item.active{color:var(--red)}
+.alarm-item.clear{color:var(--t3)}
 
-/* ── PLATFORMS ── */
-#platforms{padding:100px 0;background:var(--ink2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1)}
-.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--b1)}
-.plat-card{background:var(--ink2);padding:44px 40px;transition:all .3s;cursor:pointer;position:relative;overflow:hidden}
-.plat-card::before{content:'';position:absolute;inset:0;background:var(--neonBg);opacity:0;transition:opacity .3s}
-.plat-card:hover::before{opacity:1}
-.plat-card:hover{transform:translateY(-4px)}
-.pc-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--t3);letter-spacing:1px;margin-bottom:16px}
-.pc-icon{width:52px;height:52px;border-radius:12px;display:grid;place-items:center;font-size:24px;margin-bottom:20px}
-.pci-neon{background:rgba(0,229,160,.12)}
-.pci-red{background:rgba(200,16,46,.12)}
-.pci-amber{background:rgba(232,160,0,.12)}
-.pc-name{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--white);letter-spacing:.5px;margin-bottom:8px}
-.pc-url{font-family:'DM Mono',monospace;font-size:11px;color:var(--neon);margin-bottom:14px;opacity:.7}
-.pc-desc{font-size:14px;color:var(--t2);line-height:1.65;margin-bottom:20px;font-weight:300}
-.pc-tags{display:flex;flex-wrap:wrap;gap:6px}
-.pc-tag{font-size:11px;padding:3px 9px;border-radius:100px;background:var(--card);color:var(--t3);border:1px solid var(--b1)}
-.pc-arrow{position:absolute;bottom:32px;right:32px;width:36px;height:36px;border-radius:50%;background:var(--neon);display:grid;place-items:center;color:var(--ink);font-size:16px;opacity:0;transition:all .3s;transform:translateX(8px)}
-.plat-card:hover .pc-arrow{opacity:1;transform:translateX(0)}
+/* ── BOILER DETAIL VIEW ────────────────────────────────────── */
+.detail-top{display:grid;grid-template-columns:240px 1fr;gap:14px;margin-bottom:14px}
+.boiler-info{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px}
+.bi-name{font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:700;color:var(--white);margin-bottom:4px}
+.bi-row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px}
+.bi-row .k{color:var(--t3)}.bi-row .v{color:var(--t1);font-family:'JetBrains Mono',monospace}
+.eff-gauge-big{text-align:center;margin-top:10px}
+.eff-ring-big{position:relative;width:100px;height:100px;margin:0 auto 6px}
+.eff-ring-big svg{width:100%;height:100%}
+.eff-ring-big .ec{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.eff-ring-big .ev{font-family:'Barlow Condensed',sans-serif;font-size:26px;font-weight:700}
+.eff-ring-big .el{font-size:9px;color:var(--t3);font-family:'JetBrains Mono',monospace}
+.burner-hrs{text-align:center;margin-top:8px;padding:8px;background:var(--bg3);border-radius:8px}
+.bh-val{font-family:'JetBrains Mono',monospace;font-size:16px;color:var(--steam)}
+.bh-lbl{font-size:10px;color:var(--t3)}
+.status-normal{color:var(--green);font-size:12px;margin-top:8px;text-align:center;font-weight:600}
 
-/* ── INDUSTRIES ── */
-#industries{padding:100px 0}
-.ind-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
-.ind-card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:32px 36px;display:flex;gap:24px;align-items:flex-start;transition:all .25s;cursor:pointer}
-.ind-card:hover{border-color:var(--b2);transform:translateY(-3px);box-shadow:var(--shadow)}
-.ind-icon{width:54px;height:54px;border-radius:12px;flex-shrink:0;display:grid;place-items:center;font-size:24px}
-.ii-g{background:rgba(0,229,160,.1)} .ii-r{background:rgba(200,16,46,.1)} .ii-a{background:rgba(232,160,0,.1)} .ii-b{background:rgba(56,189,248,.1)}
-.ind-body{}
-.ind-name{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:.5px;margin-bottom:6px}
-.ind-desc{font-size:13.5px;color:var(--t2);line-height:1.65;margin-bottom:12px;font-weight:300}
-.ind-clients{display:flex;flex-wrap:wrap;gap:6px}
-.ic{font-size:11px;color:var(--t3);background:var(--ink3);border:1px solid var(--b1);padding:2px 9px;border-radius:100px;font-family:'DM Mono',monospace}
+/* Sensor group cards */
+.sensor-groups{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.sg{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.sg-hdr{padding:8px 12px;display:flex;align-items:center;gap:8px}
+.sg-icon{font-size:16px}
+.sg-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--white);letter-spacing:.3px}
+.sg-body{padding:8px 12px 10px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.sg-fuel .sg-hdr{background:rgba(255,107,43,.08);border-bottom:1px solid rgba(255,107,43,.2)}
+.sg-water .sg-hdr{background:rgba(0,200,232,.06);border-bottom:1px solid rgba(0,200,232,.15)}
+.sg-steam .sg-hdr{background:rgba(139,92,246,.06);border-bottom:1px solid rgba(139,92,246,.15)}
+.sg-eco .sg-hdr{background:rgba(34,197,94,.06);border-bottom:1px solid rgba(34,197,94,.15)}
+.metric-box{background:var(--bg3);border-radius:6px;padding:7px 8px;text-align:center}
+.mb-val{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;line-height:1}
+.mb-unit{font-size:9px;color:var(--t3);margin-top:1px}
+.mb-lbl{font-size:9px;color:var(--t2);margin-top:3px}
+.col-fuel{color:var(--orange)}.col-water{color:var(--steam)}.col-steam{color:#A78BFA}.col-eco{color:var(--green)}
 
-/* ── RESULTS ── */
-#results{padding:100px 0;background:var(--ink2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1)}
-.results-inner{display:grid;grid-template-columns:1fr 1.2fr;gap:72px;align-items:center}
-.results-left{}
-.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:48px}
-.rcard{background:var(--card);border:1px solid var(--b1);border-radius:12px;padding:24px}
-.rcard-num{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--neon);line-height:1;letter-spacing:.5px}
-.rcard-lbl{font-size:13px;color:var(--t2);margin-top:5px;line-height:1.4}
-.rcard.highlight{border-color:var(--b2);background:var(--cardHi)}
-.rcard.highlight .rcard-num{color:var(--white)}
-/* Case study list */
-.case-list{display:flex;flex-direction:column;gap:2px;background:var(--b1);border-radius:16px;overflow:hidden}
-.case-item{background:var(--card);padding:24px 28px;cursor:pointer;transition:all .2s;display:flex;align-items:flex-start;gap:18px}
-.case-item:hover{background:var(--cardHi)}
-.ci-logo{width:44px;height:44px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:.5px;color:var(--white)}
-.ci-body{flex:1}
-.ci-client{font-size:15px;font-weight:600;color:var(--white);margin-bottom:2px}
-.ci-scope{font-size:12px;color:var(--t3);font-family:'DM Mono',monospace;margin-bottom:6px}
-.ci-impact{font-size:13px;color:var(--neon);font-weight:500}
-.ci-tag{font-size:11px;color:var(--t3);margin-top:4px}
-.ci-arrow{color:var(--t3);font-size:18px;align-self:center;flex-shrink:0;transition:all .2s}
-.case-item:hover .ci-arrow{color:var(--neon);transform:translateX(3px)}
+/* Alarm panel */
+.alarm-panel{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ap-hdr{padding:8px 12px;background:rgba(239,68,68,.06);border-bottom:1px solid rgba(239,68,68,.15);display:flex;align-items:center;justify-content:space-between}
+.ap-title{font-size:11px;font-weight:600;color:var(--red);display:flex;align-items:center;gap:6px}
+.alarm-list{padding:8px 10px}
+.alarm-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);font-size:11px}
+.alarm-row:last-child{border-bottom:none}
+.a-indicator{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.a-active{background:var(--red);box-shadow:0 0 6px rgba(239,68,68,.6);animation:blink 1.2s infinite}
+.a-clear{background:var(--t3)}
+.a-name{flex:1;color:var(--t1)}
+.a-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+.a-level{font-size:9px;padding:2px 6px;border-radius:3px;font-family:'JetBrains Mono',monospace}
+.al-crit{background:rgba(239,68,68,.2);color:var(--red)}
+.al-warn{background:var(--amberBg);color:var(--amber)}
 
-/* ── HOW ── */
-#how{padding:100px 0}
-.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:52px}
-.how-step{padding:32px 28px;position:relative}
-.how-step::after{content:'';position:absolute;right:0;top:40px;width:1px;height:calc(100% - 80px);background:var(--b1)}
-.how-step:last-child::after{display:none}
-.hs-num{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--ink3);line-height:1;margin-bottom:-8px}
-.hs-title{font-size:16px;font-weight:600;color:var(--white);margin-bottom:8px}
-.hs-body{font-size:13.5px;color:var(--t2);line-height:1.65;font-weight:300}
-.hs-duration{font-family:'DM Mono',monospace;font-size:10px;color:var(--neon);margin-top:12px;padding:3px 9px;background:var(--neonBg);border:1px solid var(--b1);border-radius:100px;display:inline-block}
+/* ── TRENDS VIEW ────────────────────────────────────────────── */
+.trend-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;padding:12px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px}
+.tc-label{font-size:12px;color:var(--t2)}
+.tc-input{background:var(--bg3);border:1px solid var(--border);color:var(--white);padding:5px 10px;border-radius:6px;font-size:12px;font-family:'Barlow',sans-serif;cursor:pointer}
+.range-btn{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--t2);transition:all .2s;font-family:'JetBrains Mono',monospace}
+.range-btn.active{background:var(--steamBg);border-color:var(--borderHi);color:var(--steam)}
+.param-toggle{display:flex;align-items:center;gap:5px;padding:4px 9px;border-radius:100px;cursor:pointer;border:1px solid var(--border);background:var(--bg3);font-size:10px;transition:all .2s}
+.param-toggle.on{border-color:var(--borderHi)}
+.pt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-/* ── TECH ── */
-#tech{padding:100px 0;background:var(--ink2);border-top:1px solid var(--b1);border-bottom:1px solid var(--b1)}
-.tech-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.tech-card{background:var(--card);border:1px solid var(--b1);border-radius:12px;padding:22px 20px;transition:all .2s}
-.tech-card:hover{border-color:var(--b2);transform:translateY(-2px)}
-.tc-icon{font-size:28px;margin-bottom:12px}
-.tc-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px}
-.tc-desc{font-size:12px;color:var(--t3);line-height:1.55}
-.tc-badge{font-size:10px;font-family:'DM Mono',monospace;padding:2px 8px;border-radius:100px;background:var(--greenBg);margin-top:8px;display:inline-block}
-.oss{background:rgba(0,229,160,.1);color:var(--neon)}
-.prop{background:rgba(200,16,46,.1);color:#F07080}
+/* ── DATA LOG VIEW ────────────────────────────────────────────── */
+.data-controls{display:flex;gap:10px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.dc-select{background:var(--card);border:1px solid var(--border);color:var(--white);padding:6px 10px;border-radius:6px;font-size:12px;font-family:'Barlow',sans-serif;cursor:pointer}
+.btn-export{background:transparent;color:var(--steam);border:1px solid var(--borderHi);padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;transition:background .2s;font-family:'Barlow',sans-serif}
+.btn-export:hover{background:var(--steamBg)}
+.data-table{width:100%;border-collapse:collapse;font-size:11px}
+.data-table th{background:var(--bg2);color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:9px;text-transform:uppercase;padding:8px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;letter-spacing:.3px}
+.data-table td{padding:7px 10px;border-bottom:1px solid rgba(0,200,232,.05);font-family:'JetBrains Mono',monospace;color:var(--t1);white-space:nowrap;font-size:11px}
+.data-table tr:hover td{background:rgba(255,255,255,.015)}
+.data-table tr:last-child td{border-bottom:none}
+.eff-cell{font-weight:600}
+.eff-hi{color:var(--green)}.eff-mid{color:var(--amber)}.eff-lo{color:var(--red)}
 
-/* ── CTA ── */
-#cta{padding:120px 32px;text-align:center;position:relative;overflow:hidden}
-.cta-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(0,229,160,.07) 0%,transparent 65%);pointer-events:none}
-.cta-h{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,7vw,100px);color:var(--white);letter-spacing:.5px;line-height:.95;margin-bottom:20px}
-.cta-h span{color:var(--neon)}
-.cta-sub{font-size:16px;color:var(--t2);max-width:520px;margin:0 auto 44px;line-height:1.7;font-weight:300}
-.cta-form{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:20px}
-.cta-input{background:var(--card);border:1px solid var(--b1);color:var(--white);padding:13px 18px;border-radius:9px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s;min-width:280px}
-.cta-input:focus{border-color:var(--b2)}
-.cta-input::placeholder{color:var(--t3)}
-.cta-note{font-size:12px;color:var(--t3)}
+/* ── SAFETY/HAZOP VIEW ────────────────────────────────────────── */
+.hazop-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+.hazop-rule{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.hr-header{padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+.hr-name{font-size:13px;font-weight:600;color:var(--white)}
+.hr-enabled{font-size:9px;padding:2px 8px;border-radius:100px;font-family:'JetBrains Mono',monospace}
+.hre-on{background:var(--greenBg);color:var(--green)}.hre-off{background:var(--redBg);color:var(--red)}
+.hr-body{padding:10px 14px;border-top:1px solid var(--border)}
+.hr-condition{font-family:'JetBrains Mono',monospace;font-size:11px;background:var(--bg3);border-radius:6px;padding:6px 10px;margin-bottom:8px;color:var(--steam)}
+.hr-action{font-size:11px;color:var(--t2);display:flex;align-items:center;gap:6px}
+.hr-trigger{display:flex;align-items:center;justify-content:space-between;margin-top:8px;font-size:11px}
+.hr-status{padding:3px 8px;border-radius:100px;font-size:9px;font-family:'JetBrains Mono',monospace}
+.hrs-ok{background:var(--greenBg);color:var(--green)}.hrs-active{background:var(--redBg);color:var(--red);animation:blink 1.2s infinite}
+.event-log{background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.el-row{display:flex;gap:10px;padding:9px 14px;border-bottom:1px solid rgba(0,200,232,.05);font-size:11px;align-items:flex-start}
+.el-time{font-family:'JetBrains Mono',monospace;color:var(--t3);flex-shrink:0;font-size:10px}
+.el-msg{flex:1}
+.el-row.alert{color:var(--red);background:rgba(239,68,68,.04)}
+.el-row.warn{color:var(--amber)}
+.el-row.ok{color:var(--green)}
+.el-row.info{color:var(--t1)}
 
-/* ── FOOTER ── */
-footer{background:var(--ink2);border-top:1px solid var(--b1);padding:60px 32px 28px}
-.footer-w{max-width:1360px;margin:0 auto}
-.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr;gap:48px;margin-bottom:52px}
-.footer-brand{}
-.fb-logo{display:flex;align-items:center;gap:10px;margin-bottom:16px}
-.fb-desc{font-size:13px;color:var(--t3);line-height:1.7;max-width:280px;font-weight:300}
-.footer-col-h{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:16px}
-.footer-links{display:flex;flex-direction:column;gap:10px}
-.footer-links a{font-size:13px;color:var(--t2);text-decoration:none;transition:color .2s}
-.footer-links a:hover{color:var(--neon)}
-.footer-bottom{border-top:1px solid var(--b1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.fb-copy{font-size:12px;color:var(--t3)}
-.fb-socials{display:flex;gap:14px}
-.fb-social{width:32px;height:32px;border-radius:8px;background:var(--card);border:1px solid var(--b1);display:grid;place-items:center;cursor:pointer;transition:all .2s;color:var(--t3);font-size:14px;text-decoration:none}
-.fb-social:hover{border-color:var(--b2);color:var(--neon)}
+/* ── AI/ML VIEW ────────────────────────────────────────────── */
+.aiml-roadmap{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.rm-card{border-radius:12px;padding:18px;border:1px solid}
+.rm-p1{background:rgba(0,200,232,.06);border-color:rgba(0,200,232,.2)}
+.rm-p2{background:rgba(139,92,246,.06);border-color:rgba(139,92,246,.2)}
+.rm-p3{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2)}
+.rm-phase{font-size:10px;font-family:'JetBrains Mono',monospace;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.rm-p1 .rm-phase{color:var(--steam)}.rm-p2 .rm-phase{color:#A78BFA}.rm-p3 .rm-phase{color:var(--amber)}
+.rm-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:4px}
+.rm-timeline{font-size:11px;margin-bottom:10px}
+.rm-p1 .rm-timeline{color:var(--steam)}.rm-p2 .rm-timeline{color:#A78BFA}.rm-p3 .rm-timeline{color:var(--amber)}
+.rm-items{list-style:none;display:flex;flex-direction:column;gap:6px}
+.rm-items li{font-size:12px;color:var(--t2);display:flex;align-items:flex-start;gap:6px}
+.rm-items li::before{content:'→';flex-shrink:0;margin-top:1px}
+.rm-p1 li::before{color:var(--steam)}.rm-p2 li::before{color:#A78BFA}.rm-p3 li::before{color:var(--amber)}
+.arch-stack{display:flex;flex-direction:column;gap:6px}
+.as-row{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:8px;font-size:12px}
+.as-label{width:130px;font-weight:600;color:var(--white);flex-shrink:0}
+.as-tech{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--steam);flex:1}
+.as-desc{font-size:11px;color:var(--t3)}
+.as-oss{background:var(--bg3);border-left:3px solid var(--steam)}
+.as-keep{background:var(--bg3);border-left:3px solid var(--t3)}
+.as-new{background:var(--bg3);border-left:3px solid var(--green)}
+.usecase-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.uc-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px}
+.uc-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--steam);margin-bottom:4px}
+.uc-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px}
+.uc-body{font-size:12px;color:var(--t2);line-height:1.5;margin-bottom:8px}
+.uc-impact{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--green)}
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:24px;right:24px;z-index:600;background:var(--card);border:1px solid var(--b2);border-radius:10px;padding:12px 18px;font-size:13px;color:var(--neon);box-shadow:var(--shadow);transform:translateY(120%);transition:transform .35s;pointer-events:none;max-width:280px;font-family:'Outfit',sans-serif}
-.toast.show{transform:translateY(0)}
+/* ── PROPOSAL VIEW ────────────────────────────────────────────── */
+.prop-cover{background:linear-gradient(135deg,var(--bg) 0%,var(--bg3) 50%,var(--bg) 100%);
+border:1px solid var(--border);border-radius:16px;padding:48px;margin-bottom:20px;position:relative;overflow:hidden}
+.prop-cover::before{content:'';position:absolute;top:-30%;right:-10%;width:500px;height:500px;
+background:radial-gradient(circle,rgba(0,200,232,.06) 0%,transparent 65%);pointer-events:none}
+.prop-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(0,200,232,.08);border:1px solid rgba(0,200,232,.2);border-radius:100px;padding:4px 12px;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--steam);margin-bottom:16px}
+.prop-h1{font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,54px);font-weight:700;color:var(--white);margin-bottom:10px;line-height:1}
+.prop-h1 span{color:var(--steam)}
+.prop-sub{font-size:14px;color:var(--t2);max-width:600px;line-height:1.65;margin-bottom:24px}
+.prop-by{font-size:12px;color:var(--t3);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.prop-by strong{color:var(--t1)}
 
-/* ── RESPONSIVE ── */
-@media(max-width:1100px){.platform-grid{grid-template-columns:1fr}.platform-grid{gap:2px}.results-inner{grid-template-columns:1fr}.how-steps{grid-template-columns:1fr 1fr}.tech-grid{grid-template-columns:1fr 1fr}.footer-top{grid-template-columns:1fr 1fr}}
-@media(max-width:768px){.nav-links,.nav-ticker{display:none}.hero-stats{grid-template-columns:1fr 1fr}.ind-grid{grid-template-columns:1fr}.how-steps{grid-template-columns:1fr}.results-grid{grid-template-columns:1fr}.footer-top{grid-template-columns:1fr 1fr}.hero-h1{font-size:clamp(56px,14vw,96px)}}
-@media(max-width:480px){.hero-stats{grid-template-columns:1fr}.footer-top{grid-template-columns:1fr}}
+/* Team */
+.team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.team-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px;text-align:center}
+.team-avatar{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-size:20px}
+.ta-pm{background:rgba(0,200,232,.12)}
+.ta-arch{background:rgba(139,92,246,.12)}
+.ta-dev{background:rgba(34,197,94,.12)}
+.ta-ai{background:rgba(245,158,11,.12)}
+.team-name{font-size:14px;font-weight:600;color:var(--white);margin-bottom:2px}
+.team-role{font-size:11px;color:var(--steam);margin-bottom:6px;font-family:'JetBrains Mono',monospace}
+.team-skills{font-size:11px;color:var(--t3);line-height:1.5}
 
-/* ── ANIMATIONS ── */
-@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
-@keyframes slideIn{from{opacity:0;transform:translateX(-20px)}to{opacity:1;transform:translateX(0)}}
-.fade-up{animation:fadeUp .7s ease both}
-.fade-up-d1{animation-delay:.1s}
-.fade-up-d2{animation-delay:.2s}
-.fade-up-d3{animation-delay:.3s}
-.fade-up-d4{animation-delay:.4s}
-.fade-up-d5{animation-delay:.5s}
+/* Commercials */
+.cost-table{width:100%;border-collapse:collapse;font-size:13px}
+.cost-table th{background:var(--bg2);color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:10px;text-transform:uppercase;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);letter-spacing:.3px}
+.cost-table td{padding:11px 14px;border-bottom:1px solid rgba(0,200,232,.05);color:var(--t1)}
+.cost-table tr:last-child td{border-bottom:none;font-weight:600;background:rgba(0,200,232,.04)}
+.cost-table tr:hover td{background:rgba(255,255,255,.015)}
+.cost-val{font-family:'JetBrains Mono',monospace;font-weight:600;color:var(--steam)}
+.milestone-list{display:flex;flex-direction:column;gap:0}
+.ms{display:flex;gap:0;align-items:stretch}
+.ms-line{display:flex;flex-direction:column;align-items:center;width:44px;flex-shrink:0}
+.ms-dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--steam);background:var(--bg2);flex-shrink:0;z-index:1}
+.ms-connector{flex:1;width:2px;background:var(--border)}
+.ms-body{padding:0 0 20px 12px;flex:1}
+.ms-week{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--steam);margin-bottom:3px}
+.ms-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:3px}
+.ms-items{font-size:12px;color:var(--t2);line-height:1.6}
+.roi-val-big{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:var(--steam)}
+.roi-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.roi-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center}
+.roi-card-val{font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:600;line-height:1;margin-bottom:4px}
+.roi-card-lbl{font-size:11px;color:var(--t2)}
+.tech-stack{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.ts-item{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.ts-icon{font-size:18px;width:32px;text-align:center;flex-shrink:0}
+.ts-name{font-size:13px;font-weight:600;color:var(--white);margin-bottom:1px}
+.ts-desc{font-size:11px;color:var(--t3)}
+.ts-oss{border-left:3px solid var(--green)}
+.why-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.why-card{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--steam);border-radius:10px;padding:14px}
+.wc-icon{font-size:22px;margin-bottom:8px}
+.wc-title{font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px}
+.wc-body{font-size:12px;color:var(--t2);line-height:1.5}
+
+@media(max-width:1100px){.fleet-grid{grid-template-columns:1fr 1fr}.team-grid{grid-template-columns:1fr 1fr}.aiml-roadmap{grid-template-columns:1fr}.roi-cards{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){.fleet-grid{grid-template-columns:1fr}.g2,.g3,.g4,.g5,.g23,.g32,.hazop-grid,.usecase-cards{grid-template-columns:1fr}.sg-body{grid-template-columns:1fr 1fr}.sensor-groups{grid-template-columns:1fr}.detail-top{grid-template-columns:1fr}.why-cards,.tech-stack{grid-template-columns:1fr}.team-grid{grid-template-columns:1fr 1fr}.nav-tab{font-size:11px;padding:5px 8px}}
 </style>
 </head>
 <body>
 
-<div class="grid-bg"></div>
-
-<!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
+<!-- NAV -->
 <nav>
-  <div class="nav-w">
-    <a class="nav-brand" href="#">
-      <div class="brand-logo">
-        <svg viewBox="0 0 20 20" fill="none">
-          <path d="M3 16L10 4l7 12H3z" fill="#060A0D" stroke="#060A0D" stroke-width=".5"/>
-          <path d="M10 4v12M3 16h14" stroke="#060A0D" stroke-width="1.2" stroke-linecap="round"/>
-          <circle cx="10" cy="10" r="2" fill="#060A0D"/>
-        </svg>
-      </div>
-      <div><div class="brand-name">AriPrus<span class="brand-dot">.</span></div></div>
-    </a>
-    <div class="nav-links">
-      <button class="nl active">Platform</button>
-      <button class="nl">Industries</button>
-      <button class="nl">Case Studies</button>
-      <button class="nl">Technology</button>
-      <button class="nl">About</button>
-    </div>
-    <div class="nav-ticker">
-      <div class="ticker-item">
-        <div class="ticker-dot"></div>
-        <span class="ticker-val" id="t-eff">86.4%</span>
-        <span class="ticker-lbl">Fleet efficiency</span>
-      </div>
-      <div class="ticker-item">
-        <div class="ticker-dot" style="background:var(--amber)"></div>
-        <span class="ticker-val" style="color:var(--amber)" id="t-batches">2,847</span>
-        <span class="ticker-lbl">Batches optimised</span>
-      </div>
-      <div class="ticker-item">
-        <div class="ticker-dot" style="background:var(--sky)"></div>
-        <span class="ticker-val" style="color:var(--sky)" id="t-sites">14</span>
-        <span class="ticker-lbl">Sites live</span>
-      </div>
-    </div>
-    <button class="btn-cta-nav" onclick="showToast('Our team will reach you within 24 hours.')">Talk to us →</button>
-  </div>
+<div class="nav-w">
+<a class="nav-logo" href="#">
+<div class="logo-icon">💨</div>
+<div>
+<div class="logo-text">SteamBytes</div>
+<div class="logo-sub">Open-Source Platform · Demo</div>
+</div>
+</a>
+<div class="nav-tabs" id="navTabs">
+<button class="nav-tab active" onclick="showView('fleet')" data-v="fleet">🏭 Fleet Overview</button>
+<button class="nav-tab" onclick="showView('detail')" data-v="detail">⚙ Boiler Detail</button>
+<button class="nav-tab" onclick="showView('trends')" data-v="trends">📈 Trends</button>
+<button class="nav-tab" onclick="showView('data')" data-v="data">📋 Data Log</button>
+<button class="nav-tab" onclick="showView('safety')" data-v="safety">🛡 Safety / HAZOP</button>
+<button class="nav-tab" onclick="showView('aiml')" data-v="aiml">🤖 AI/ML Roadmap</button>
+<button class="nav-tab tab-proposal" onclick="showView('proposal')" data-v="proposal">📄 Proposal & ROI</button>
+</div>
+<div class="nav-right">
+<div class="nav-time" id="navClock">—</div>
+<div class="live-badge"><div class="blink"></div>LIVE</div>
+
+</div>
+</div>
 </nav>
 
-<!-- ═══ HERO ═══════════════════════════════════════════════════════ -->
-<section id="hero">
-  <div class="hero-w">
-    <div class="hero-eyebrow fade-up">
-      <div class="eyebrow-pip"></div>
-      <div class="eyebrow-txt">Industrial AI · Polymerization · Boiler · CIP · Chemical</div>
-    </div>
-    <h1 class="hero-h1 fade-up fade-up-d1">
-      Industrial<br/>
-      <span class="accent">Intelligence.</span>
-      <span class="sub-line">Built to Produce.</span>
-    </h1>
-    <div class="hero-rule fade-up fade-up-d2"></div>
-    <p class="hero-desc fade-up fade-up-d3">AriPrus deploys AI/ML on the factory floor — not in a proof of concept. We build platforms that optimise polymerization yield, predict boiler efficiency, and control CIP processes for India and South-East Asia's largest manufacturers.</p>
-    <div class="hero-actions fade-up fade-up-d4">
-      <button class="btn-primary" onclick="document.getElementById('platforms').scrollIntoView({behavior:'smooth'})">Explore Platforms →</button>
-      <button class="btn-ghost" onclick="document.getElementById('results').scrollIntoView({behavior:'smooth'})">See Results</button>
-    </div>
-    <div class="hero-stats fade-up fade-up-d5">
-      <div class="hs"><div class="hs-num" id="c-crore">0</div><div class="hs-lbl">Rs Crore annual value delivered</div></div>
-      <div class="hs"><div class="hs-num" id="c-eff">0%</div><div class="hs-lbl">Average efficiency improvement</div></div>
-      <div class="hs"><div class="hs-num" id="c-bat">0</div><div class="hs-lbl">Batches optimised to date</div></div>
-      <div class="hs"><div class="hs-num" id="c-sites">0</div><div class="hs-lbl">Industrial sites in production</div></div>
-    </div>
-  </div>
-  <!-- Floating data panel -->
-  <div class="hero-float">
-    <div class="hf-panel">
-      <div class="hf-header">
-        <div class="hf-title">AriLinc · R-201 · Fevicol SH</div>
-        <div class="hf-live"><div class="ticker-dot" style="width:5px;height:5px;border-radius:50%;background:var(--neon);animation:pulse 1.4s infinite"></div>LIVE</div>
-      </div>
-      <div class="hf-body">
-        <div class="hf-row"><span class="hf-sensor">Reactor Temp</span><span class="hf-val" id="fp-temp">82.4°C</span></div>
-        <div class="hf-row"><span class="hf-sensor">Yield Prediction</span><span class="hf-val" id="fp-yield">94.2%</span></div>
-        <div class="hf-row"><span class="hf-sensor">Monomer Conversion</span><span class="hf-val" id="fp-conv">68%</span></div>
-        <div class="hf-row"><span class="hf-sensor">Golden Batch Score</span><span class="hf-val" id="fp-score">96.4</span></div>
-        <div class="hf-row"><span class="hf-sensor">Viscosity (predicted)</span><span class="hf-val">48,200 cP</span></div>
-        <div class="hf-row"><span class="hf-sensor">Cycle optimisation</span><span class="hf-val" style="color:var(--amber)">−35 min</span></div>
-        <div class="hf-bar-wrap"><div class="hf-bar" id="fp-bar" style="width:68%"></div></div>
-        <div style="display:flex;justify-content:space-between;font-size:10px;font-family:'DM Mono',monospace;color:var(--t3)">
-          <span>Batch progress</span><span id="fp-prog">68%</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ FLEET OVERVIEW ═════════════════════════════════════ -->
+<div class="view active" id="view-fleet">
+<div class="view-inner">
+<div class="sect-hdr mb5">
+<div class="sect-tag">Fleet Intelligence</div>
+<div class="sect-h">SteamBytes — Live Fleet Overview</div>
+<div class="sect-sub">3 sites · Johor Bahru | Kuala Lumpur | Penang · Open-Source Platform Demo</div>
+</div>
+<div class="fleet-grid" id="fleetGrid"></div>
+<div class="g3">
+<div class="card">
+<div class="card-hdr"><div class="card-title">Fleet Efficiency Trend (7D)</div><div class="badge badge-steam">LIVE</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="fleetEffChart" height="140"></canvas></div>
+</div>
+<div class="card">
+<div class="card-hdr"><div class="card-title">Steam Output — All Sites (ton/hr)</div><div class="badge badge-live">LIVE</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="fleetSteamChart" height="140"></canvas></div>
+</div>
+<div class="card">
+<div class="card-hdr"><div class="card-title">Active Alarms by Site</div></div>
+<div class="card-body" id="fleetAlarmSummary"></div>
+</div>
+</div>
+</div>
+</div>
 
-<!-- ═══ PLATFORMS ════════════════════════════════════════════════ -->
-<section id="platforms">
-  <div style="padding:100px 0">
-    <div class="section-w" style="margin-bottom:0">
-      <div class="sec-eyebrow">Our Platforms</div>
-      <div class="sec-h">Three platforms.<br/>One intelligence layer.</div>
-      <div class="sec-sub">Each platform is purpose-built for its domain — not generic analytics repurposed for industry. Real-time, connected, and deployable in weeks.</div>
-    </div>
-    <div class="platform-grid">
-      <div class="plat-card" onclick="window.open('https://chemical.ariprus.com','_blank')">
-        <div class="pc-num">01 · POLYMERIZATION</div>
-        <div class="pc-icon pci-neon">⚗</div>
-        <div class="pc-name">AriLinc</div>
-        <div class="pc-url">chemical.ariprus.com</div>
-        <div class="pc-desc">AI/ML-powered polymerization yield optimisation. Golden Batch consistency scoring, in-process quality soft sensors, and cycle time reduction — live on your DCS historian.</div>
-        <div class="pc-tags">
-          <div class="pc-tag">Golden Batch</div>
-          <div class="pc-tag">Quality Soft Sensors</div>
-          <div class="pc-tag">Cycle Time AI</div>
-          <div class="pc-tag">XGBoost + LSTM</div>
-        </div>
-        <div class="pc-arrow">→</div>
-      </div>
-      <div class="plat-card" onclick="window.open('https://boiler.ariprus.com','_blank')">
-        <div class="pc-num">02 · STEAM & ENERGY</div>
-        <div class="pc-icon pci-red">💨</div>
-        <div class="pc-name">SteamBytes</div>
-        <div class="pc-url">boiler.ariprus.com</div>
-        <div class="pc-desc">Open-source boiler intelligence platform for Mechmar's industrial boiler fleet. Real-time efficiency monitoring, HAZOP safety logic, digital logbooks, and AI/ML roadmap — replacing ThingWorx at zero licence cost.</div>
-        <div class="pc-tags">
-          <div class="pc-tag">Boiler Monitoring</div>
-          <div class="pc-tag">HAZOP Logic</div>
-          <div class="pc-tag">Fleet Overview</div>
-          <div class="pc-tag">Open-Source</div>
-        </div>
-        <div class="pc-arrow">→</div>
-      </div>
-      <div class="plat-card" onclick="window.open('https://cip.ariprus.com','_blank')">
-        <div class="pc-num">03 · CIP & HYGIENE</div>
-        <div class="pc-icon pci-amber">🧪</div>
-        <div class="pc-name">AriLinc CIP</div>
-        <div class="pc-url">cip.ariprus.com</div>
-        <div class="pc-desc">Clean-in-Place optimisation for dairy, pharmaceutical, and chemical manufacturing. AI-controlled chemical dosing, cycle time reduction, and compliance-ready audit trails for FDA 21 CFR Part 11 and ISO 14001.</div>
-        <div class="pc-tags">
-          <div class="pc-tag">Dairy CIP</div>
-          <div class="pc-tag">Pharma CIP</div>
-          <div class="pc-tag">Chemical CIP</div>
-          <div class="pc-tag">21 CFR Part 11</div>
-        </div>
-        <div class="pc-arrow">→</div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ BOILER DETAIL ══════════════════════════════════════ -->
+<div class="view" id="view-detail">
+<div class="view-inner">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap">
+<div class="sect-tag" style="margin-bottom:0">Boiler Detail</div>
+<select id="boilerSelect" class="dc-select" onchange="renderDetail()" style="margin-left:8px">
+<option value="0">JH-PMD-81723 · wilmar · Johor Bahru</option>
+<option value="1">KL-PMD-62411 · Nestle Malaysia · KL</option>
+<option value="2">PG-PMD-44199 · IOI Group · Penang</option>
+</select>
+<div class="badge badge-live" style="margin-left:auto">LIVE DATA</div>
+</div>
+<div class="detail-top">
+<div class="col">
+<div class="boiler-info" id="boilerInfoPanel"></div>
+<div class="alarm-panel" id="detailAlarmPanel"></div>
+</div>
+<div class="sensor-groups" id="sensorGroupsPanel"></div>
+</div>
+<div class="g2">
+<div class="card">
+<div class="card-hdr"><div class="card-title">Steam Pressure Trend (bar) — Last 2 Hours</div><div class="badge badge-live">LIVE</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="detailPressChart" height="170"></canvas></div>
+</div>
+<div class="card">
+<div class="card-hdr"><div class="card-title">O₂ Level vs Fuel Consumption — Last 2 Hours</div><div class="badge badge-steam">CORRELATION</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="detailO2Chart" height="170"></canvas></div>
+</div>
+</div>
+</div>
+</div>
 
-<!-- ═══ INDUSTRIES ═══════════════════════════════════════════════ -->
-<section id="industries" style="padding:100px 0">
-  <div class="section-w">
-    <div class="sec-eyebrow">Industries</div>
-    <div class="sec-h">Where we operate.</div>
-    <div class="sec-sub">Purpose-built for the industries where batch chemistry, thermal efficiency and process hygiene determine profitability.</div>
-    <div class="ind-grid">
-      <div class="ind-card">
-        <div class="ind-icon ii-g">⚗</div>
-        <div class="ind-body">
-          <div class="ind-name">Adhesives & Polymers</div>
-          <div class="ind-desc">Polymerization yield optimisation for PVAc, VAE and acrylic polymer production. Golden Batch consistency scoring, in-process viscosity and MW prediction, and cycle time reduction deployed on existing DCS infrastructure.</div>
-          <div class="ind-clients">
-            <div class="ic">Pidilite Industries</div>
-            <div class="ic">Fevicol SH</div>
-            <div class="ic">Dr. Fixit</div>
-            <div class="ic">Pidifin VAE</div>
-          </div>
-        </div>
-      </div>
-      <div class="ind-card">
-        <div class="ind-icon ii-r">💨</div>
-        <div class="ind-body">
-          <div class="ind-name">Industrial Steam & Energy</div>
-          <div class="ind-desc">Boiler fleet monitoring, combustion efficiency optimisation and HAZOP safety logic for industrial steam generation. Open-source platform replacing expensive proprietary IIoT licences with zero cost per additional site.</div>
-          <div class="ind-clients">
-            <div class="ic">Mechmar</div>
-            <div class="ic">SteamBytes</div>
-            <div class="ic">Wilmar</div>
-            <div class="ic">Nestle Malaysia</div>
-            <div class="ic">IOI Group</div>
-          </div>
-        </div>
-      </div>
-      <div class="ind-card">
-        <div class="ind-icon ii-a">🧪</div>
-        <div class="ind-body">
-          <div class="ind-name">Dairy & Food</div>
-          <div class="ind-desc">CIP cycle optimisation, automated chemical dosing control and real-time conductivity monitoring for dairy and food processing. HACCP-aligned digital audit trails and 30–45% reduction in chemical and water consumption.</div>
-          <div class="ind-clients">
-            <div class="ic">Dairy CIP</div>
-            <div class="ic">Food Processing</div>
-            <div class="ic">HACCP</div>
-          </div>
-        </div>
-      </div>
-      <div class="ind-card">
-        <div class="ind-icon ii-b">💊</div>
-        <div class="ind-body">
-          <div class="ind-name">Pharmaceutical & Chemical</div>
-          <div class="ind-desc">GMP-validated CIP platforms with 21 CFR Part 11 electronic records, CAPA deviation management, and ISO 14001 / REACH compliance logging. WFI circuit monitoring and API cross-contamination prevention.</div>
-          <div class="ind-clients">
-            <div class="ic">Pharma CIP</div>
-            <div class="ic">21 CFR Part 11</div>
-            <div class="ic">Chemical CIP</div>
-            <div class="ic">ISO 14001</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ TRENDS VIEW ════════════════════════════════════════ -->
+<div class="view" id="view-trends">
+<div class="view-inner">
+<div class="sect-hdr mb4">
+<div class="sect-tag">Historical Analysis</div>
+<div class="sect-h">Operational Trends</div>
+</div>
+<div class="trend-controls mb4">
+<div class="tc-label">Boiler:</div>
+<select class="tc-input"><option>JH-PMD-81723 · wilmar</option><option>KL-PMD-62411 · Nestle</option><option>PG-PMD-44199 · IOI</option></select>
+<div class="tc-label">From:</div>
+<input type="date" class="tc-input" value="2026-02-12"/>
+<div class="tc-label">To:</div>
+<input type="date" class="tc-input" value="2026-02-13"/>
+<button class="range-btn active">1D</button>
+<button class="range-btn">7D</button>
+<button class="range-btn">14D</button>
+<button class="range-btn">30D</button>
+<button class="btn-export" onclick="showToast('Trend data exported to CSV')">⬇ Export</button>
+</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px" id="paramToggles"></div>
+<div class="card mb4">
+<div class="card-hdr">
+<div class="card-title">Multi-Parameter Trend Chart (Interactive)</div>
+<div class="badge badge-steam">ROOT CAUSE ANALYSIS</div>
+</div>
+<div class="card-body" style="padding-top:8px"><canvas id="trendsChart" height="320"></canvas></div>
+</div>
+<div class="g2">
+<div class="card">
+<div class="card-hdr"><div class="card-title">Efficiency vs Fuel Rate Correlation</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="corrChart" height="200"></canvas></div>
+</div>
+<div class="card">
+<div class="card-hdr"><div class="card-title">Steam Output Daily Summary (ton)</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="dailySteamChart" height="200"></canvas></div>
+</div>
+</div>
+</div>
+</div>
 
-<!-- ═══ RESULTS ══════════════════════════════════════════════════ -->
-<section id="results">
-  <div style="padding:100px 0">
-    <div class="section-w">
-      <div class="results-inner">
-        <div>
-          <div class="sec-eyebrow">Measured Results</div>
-          <div class="sec-h">Numbers<br/>that matter.</div>
-          <div class="sec-sub" style="margin-bottom:0">Every figure below is from a live deployment — not a benchmark or a case study projection. These are measured outcomes from production systems running today.</div>
-          <div class="results-grid">
-            <div class="rcard highlight">
-              <div class="rcard-num">Rs 56Cr+</div>
-              <div class="rcard-lbl">Annual yield value at Pidilite pilot scale</div>
-            </div>
-            <div class="rcard">
-              <div class="rcard-num">35min</div>
-              <div class="rcard-lbl">Avg batch cycle time reduction per reactor</div>
-            </div>
-            <div class="rcard">
-              <div class="rcard-num">80%</div>
-              <div class="rcard-lbl">Reduction in mid-batch lab sampling</div>
-            </div>
-            <div class="rcard">
-              <div class="rcard-num">45%</div>
-              <div class="rcard-lbl">Off-spec batch rate reduction</div>
-            </div>
-            <div class="rcard">
-              <div class="rcard-num">RM 0</div>
-              <div class="rcard-lbl">Monthly platform licence after migration</div>
-            </div>
-            <div class="rcard">
-              <div class="rcard-num">6wk</div>
-              <div class="rcard-lbl">Time to first live yield prediction model</div>
-            </div>
-          </div>
-        </div>
-        <div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--t3);margin-bottom:16px">Client Deployments</div>
-          <div class="case-list">
-            <div class="case-item">
-              <div class="ci-logo" style="background:rgba(200,16,46,.15);color:#F07080">PI</div>
-              <div class="ci-body">
-                <div class="ci-client">Pidilite Industries Limited</div>
-                <div class="ci-scope">AriLinc · Polymerization · Navi Mumbai</div>
-                <div class="ci-impact">Rs 32–54 Cr annual yield value · 3 use cases live</div>
-                <div class="ci-tag">Golden Batch · Quality Soft Sensors · Cycle Time AI</div>
-              </div>
-              <div class="ci-arrow">→</div>
-            </div>
-            <div class="case-item">
-              <div class="ci-logo" style="background:rgba(0,229,160,.1);color:var(--neon)">MB</div>
-              <div class="ci-body">
-                <div class="ci-client">Mechmar / SteamBytes</div>
-                <div class="ci-scope">Open-Source Boiler Platform · 3 Sites · Malaysia</div>
-                <div class="ci-impact">RM 409K+ annual saving · ThingWorx replaced</div>
-                <div class="ci-tag">Fleet Monitoring · HAZOP Logic · AI/ML Roadmap</div>
-              </div>
-              <div class="ci-arrow">→</div>
-            </div>
-            <div class="case-item">
-              <div class="ci-logo" style="background:rgba(232,160,0,.1);color:var(--amber)">CIP</div>
-              <div class="ci-body">
-                <div class="ci-client">Dairy & Chemical CIP Clients</div>
-                <div class="ci-scope">AriLinc CIP · Multiple sites · India</div>
-                <div class="ci-impact">30–45% chemical saving · 21 CFR compliance</div>
-                <div class="ci-tag">Dairy · Pharma · Chemical · Automated dosing</div>
-              </div>
-              <div class="ci-arrow">→</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ DATA LOG VIEW ══════════════════════════════════════ -->
+<div class="view" id="view-data">
+<div class="view-inner">
+<div class="sect-hdr mb4">
+<div class="sect-tag">Digital Logbook</div>
+<div class="sect-h">Operational Data Log</div>
+<div class="sect-sub">Replaces manual boilerman logbooks · Exportable · Auditable</div>
+</div>
+<div class="data-controls">
+<select class="dc-select"><option>JH-PMD-81723 · wilmar</option><option>KL-PMD-62411 · Nestle</option></select>
+<input type="date" class="dc-select" value="2026-02-12"/>
+<select class="dc-select"><option>All Fields</option><option>Performance</option><option>Efficiency</option></select>
+<button class="btn-export" onclick="showToast('Logbook exported — SteamBytes_Log_20260212.xlsx')">⬇ Export Excel</button>
+<button class="btn-export" onclick="showToast('PDF report generated')">⬇ PDF Report</button>
+</div>
+<div class="card" style="overflow-x:auto">
+<table class="data-table" id="dataTable"></table>
+</div>
+</div>
+</div>
 
-<!-- ═══ HOW ════════════════════════════════════════════════════════ -->
-<section id="how">
-  <div class="section-w">
-    <div class="sec-eyebrow">How We Deploy</div>
-    <div class="sec-h">From pilot to<br/>production in weeks.</div>
-    <div class="sec-sub">We deploy in advisory mode first. You see the recommendations before any automation. ROI is measured at Day 30 before you commit to scale.</div>
-  </div>
-  <div class="section-w" style="padding-top:0">
-    <div class="how-steps">
-      <div class="how-step">
-        <div class="hs-num">01</div>
-        <div class="hs-title">Connect & Baseline</div>
-        <div class="hs-body">Read-only connectors to your DCS historian, SAP PP, and LIMS. No process changes, no PLC modification. We establish baseline yield, quality and cycle metrics.</div>
-        <div class="hs-duration">Weeks 1–2</div>
-      </div>
-      <div class="how-step">
-        <div class="hs-num">02</div>
-        <div class="hs-title">Model & Validate</div>
-        <div class="hs-body">Golden Recipe identified from historical data. Soft sensor models trained. Cycle time optimiser calibrated. Your process engineers validate every model before it goes live.</div>
-        <div class="hs-duration">Weeks 3–5</div>
-      </div>
-      <div class="how-step">
-        <div class="hs-num">03</div>
-        <div class="hs-title">Advisory Mode Live</div>
-        <div class="hs-body">All three use cases active. Platform recommends. Operators confirm. Every suggestion and outcome logged. You see the value before any automation is enabled.</div>
-        <div class="hs-duration">Weeks 6–9</div>
-      </div>
-      <div class="how-step">
-        <div class="hs-num">04</div>
-        <div class="hs-title">Measure & Scale</div>
-        <div class="hs-body">30-day ROI report delivered. Yield delta, off-spec rate, cycle time — measured vs. baseline. You decide to scale based on evidence, not promise.</div>
-        <div class="hs-duration">Week 10 onward</div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ SAFETY / HAZOP ═════════════════════════════════════ -->
+<div class="view" id="view-safety">
+<div class="view-inner">
+<div class="sect-hdr mb4">
+<div class="sect-tag">Safety Logic · HAZOP</div>
+<div class="sect-h">Rule Engine & Alarm Management</div>
+<div class="sect-sub">HAZOP safety rules ported from ThingWorx · Email/SMS notification to PIC · Tamper-proof audit log</div>
+</div>
+<div class="hazop-grid mb4" id="hazopRules"></div>
+<div class="g2">
+<div class="card">
+<div class="card-hdr"><div class="card-title">Active Alarms — All Sites</div><div class="badge badge-live">REAL-TIME</div></div>
+<div id="safetyAlarmPanel"></div>
+</div>
+<div class="event-log">
+<div class="card-hdr"><div class="card-title">HAZOP Event Log</div><div class="badge badge-steam">AUDIT TRAIL</div></div>
+<div id="hazopEventLog"></div>
+</div>
+</div>
+</div>
+</div>
 
-<!-- ═══ TECH STACK ════════════════════════════════════════════════ -->
-<section id="tech">
-  <div style="padding:100px 0">
-    <div class="section-w">
-      <div class="sec-eyebrow">Technology</div>
-      <div class="sec-h">Open-source. IP-sovereign.<br/>Production-grade.</div>
-      <div class="sec-sub">No vendor lock-in. No black-box licences. Every component is open-source or owned by the client. Your data never leaves your security perimeter.</div>
-      <div class="tech-grid">
-        <div class="tech-card"><div class="tc-icon">🗄</div><div class="tc-name">TimescaleDB</div><div class="tc-desc">Time-series optimised PostgreSQL for all sensor and batch data. Hypertables handle billions of rows without query degradation.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">📊</div><div class="tc-name">Grafana OSS</div><div class="tc-desc">Production-grade dashboards, alerting and data exploration. Unlimited users, zero licence cost. Fully extensible by your own engineering team.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">🤖</div><div class="tc-name">XGBoost + LSTM</div><div class="tc-desc">Gradient boosting and sequence models for yield prediction and quality soft sensors. Trained on your historical batch data, not generic industry benchmarks.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">🔁</div><div class="tc-name">Apache Kafka</div><div class="tc-desc">High-throughput message bus receiving real-time sensor telemetry from Node-RED and DCS systems. Handles 50,000+ messages per second.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">📈</div><div class="tc-name">MLflow</div><div class="tc-desc">Model versioning, experiment tracking and deployment registry. Every model retrain is logged. Roll back is one command.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">⚗</div><div class="tc-name">Prophet + scikit-learn</div><div class="tc-desc">Time-series forecasting for steam demand and batch demand prediction. Ensemble models for quality outcome classification.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">🔐</div><div class="tc-name">Keycloak</div><div class="tc-desc">Enterprise SSO and role-based access control. Operator, supervisor, and admin roles with full audit trail. Self-hosted inside your cloud tenant.</div><div class="tc-badge oss">Open-source</div></div>
-        <div class="tech-card"><div class="tc-icon">☁</div><div class="tc-name">Docker Compose</div><div class="tc-desc">All services containerised. Deploys on your existing cloud server or VPS. No new infrastructure required in most engagements.</div><div class="tc-badge oss">Open-source</div></div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- ═══════ AI/ML ROADMAP ══════════════════════════════════════ -->
+<div class="view" id="view-aiml">
+<div class="view-inner">
+<div class="sect-hdr mb5">
+<div class="sect-tag">AI/ML Intelligence</div>
+<div class="sect-h">AI/ML Capability Roadmap</div>
+<div class="sect-sub">3-phase roadmap from data foundation to predictive intelligence — built on the open-source platform</div>
+</div>
+<div class="aiml-roadmap mb5">
+<div class="rm-card rm-p1">
+<div class="rm-phase">Phase 1 · Foundation</div>
+<div class="rm-title">Data Readiness & Baseline Models</div>
+<div class="rm-timeline">Months 1–4 · Runs in parallel with platform migration</div>
+<ul class="rm-items">
+<li>Data quality audit — 16 sensor streams validated</li>
+<li>TimescaleDB time-series schema deployed</li>
+<li>Baseline efficiency model (linear regression)</li>
+<li>Anomaly detection — statistical process control</li>
+<li>Grafana ML metrics dashboard</li>
+</ul>
+</div>
+<div class="rm-card rm-p2">
+<div class="rm-phase">Phase 2 · Prediction</div>
+<div class="rm-title">Predictive Analytics & Optimisation</div>
+<div class="rm-timeline">Months 5–9 · Post go-live, multi-site data available</div>
+<ul class="rm-items">
+<li>Combustion efficiency predictor (XGBoost / LightGBM)</li>
+<li>O₂ — fuel correlation optimiser</li>
+<li>Steam demand forecasting (Prophet)</li>
+<li>Predictive maintenance alerts (vibration + temp drift)</li>
+<li>Python MLflow model registry deployed</li>
+</ul>
+</div>
+<div class="rm-card rm-p3">
+<div class="rm-phase">Phase 3 · Intelligence</div>
+<div class="rm-title">Autonomous Efficiency Optimisation</div>
+<div class="rm-timeline">Months 10–18 · Fleet-scale multi-boiler intelligence</div>
+<ul class="rm-items">
+<li>Reinforcement learning — real-time burner control advisory</li>
+<li>Digital twin of boiler thermodynamics</li>
+<li>Cross-fleet benchmarking & best-practice propagation</li>
+<li>LLM-powered natural-language anomaly reports</li>
+<li>Automated HAZOP deviation root cause analysis</li>
+</ul>
+</div>
+</div>
 
-<!-- ═══ CTA ════════════════════════════════════════════════════════ -->
-<section id="cta">
-  <div class="cta-glow"></div>
-  <h2 class="cta-h">Start with<br/>a <span>30-day pilot.</span></h2>
-  <p class="cta-sub">Live models on one reactor or one boiler. ROI measured vs. your baseline at Day 30. No long-term commitment until you have seen the numbers.</p>
-  <div class="cta-form">
-    <input class="cta-input" type="email" id="ctaEmail" placeholder="your@company.com"/>
-    <button class="btn-primary" onclick="submitCTA()">Request Pilot →</button>
-  </div>
-  <div class="cta-note">Average response time: 4 business hours · No sales calls unless requested</div>
-</section>
+<div class="g2 mb5">
+<div class="card">
+<div class="card-hdr"><div class="card-title">Open-Source ML Stack Recommendation</div></div>
+<div class="card-body">
+<div class="arch-stack">
+<div class="as-row as-keep"><div class="as-label">Data Source</div><div class="as-tech">Node-RED → TimescaleDB</div><div class="as-desc">Retained. Time-series optimised.</div></div>
+<div class="as-row as-oss"><div class="as-label">Feature Store</div><div class="as-tech">Feast (open-source)</div><div class="as-desc">Reusable ML feature pipeline</div></div>
+<div class="as-row as-oss"><div class="as-label">ML Training</div><div class="as-tech">scikit-learn + XGBoost</div><div class="as-desc">Efficiency & anomaly models</div></div>
+<div class="as-row as-oss"><div class="as-label">Time-Series ML</div><div class="as-tech">Prophet + LSTM (PyTorch)</div><div class="as-desc">Demand forecasting & patterns</div></div>
+<div class="as-row as-oss"><div class="as-label">Model Registry</div><div class="as-tech">MLflow</div><div class="as-desc">Version control for ML models</div></div>
+<div class="as-row as-oss"><div class="as-label">Orchestration</div><div class="as-tech">Apache Airflow</div><div class="as-desc">Automated retraining pipelines</div></div>
+<div class="as-row as-new"><div class="as-label">Visualisation</div><div class="as-tech">Grafana + Evidence.dev</div><div class="as-desc">AI insights embedded in dashboard</div></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr"><div class="card-title">AI/ML Use Cases — Value Impact</div></div>
+<div class="card-body">
+<div class="usecase-cards" style="grid-template-columns:1fr">
+<div class="uc-card">
+<div class="uc-num">UC-01</div>
+<div class="uc-title">Combustion Efficiency Optimisation</div>
+<div class="uc-body">Correlate O₂ level, fuel flow and steam output to find the optimal air-fuel ratio per boiler in real time.</div>
+<div class="uc-impact">↑ 3–5% fuel efficiency · Est. RM 85,000/year/boiler saved</div>
+</div>
+<div class="uc-card">
+<div class="uc-num">UC-02</div>
+<div class="uc-title">Predictive Maintenance Alerts</div>
+<div class="uc-body">Detect sensor drift and component degradation 48–72h before failure — preventing unplanned shutdown.</div>
+<div class="uc-impact">↓ Unplanned downtime 60% · RM 120,000/incident avoided</div>
+</div>
+<div class="uc-card">
+<div class="uc-num">UC-03</div>
+<div class="uc-title">Steam Demand Forecasting</div>
+<div class="uc-body">Predict steam demand 4–8h ahead to optimise burner load scheduling and reduce peak fuel consumption.</div>
+<div class="uc-impact">↓ Fuel waste 8–12% · Smoother load curves across fleet</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 
-<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
-<footer>
-  <div class="footer-w">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="fb-logo">
-          <div class="brand-logo" style="width:30px;height:30px">
-            <svg viewBox="0 0 20 20" fill="none" style="width:16px;height:16px">
-              <path d="M3 16L10 4l7 12H3z" fill="#060A0D"/>
-              <circle cx="10" cy="10" r="2" fill="#060A0D"/>
-            </svg>
-          </div>
-          <div class="brand-name" style="font-size:18px">AriPrus<span class="brand-dot">.</span></div>
-        </div>
-        <div class="fb-desc">Industrial AI for polymerization, boiler efficiency and CIP hygiene. Built in India. Deployed across Asia.</div>
-      </div>
-      <div>
-        <div class="footer-col-h">Platforms</div>
-        <div class="footer-links">
-          <a href="https://chemical.ariprus.com">AriLinc — Polymerization</a>
-          <a href="https://boiler.ariprus.com">SteamBytes — Boilers</a>
-          <a href="https://cip.ariprus.com">AriLinc — CIP Dairy</a>
-          <a href="#">AriLinc — CIP Pharma</a>
-          <a href="#">AriLinc — CIP Chemical</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-h">Industries</div>
-        <div class="footer-links">
-          <a href="#">Adhesives & Polymers</a>
-          <a href="#">Industrial Steam</a>
-          <a href="#">Dairy & Food</a>
-          <a href="#">Pharmaceutical</a>
-          <a href="#">Chemical Processing</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-h">Company</div>
-        <div class="footer-links">
-          <a href="#">About AriPrus</a>
-          <a href="#">Technology</a>
-          <a href="#">Case Studies</a>
-          <a href="#">Careers</a>
-          <a href="#">Blog</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-h">Contact</div>
-        <div class="footer-links">
-          <a href="mailto:info@ariprus.com">info@ariprus.com</a>
-          <a href="#">Mumbai, India</a>
-          <a href="#">Kuala Lumpur, Malaysia</a>
-          <a href="#">Request a Demo</a>
-          <a href="#">Support Portal</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <div class="fb-copy">© 2026 AriPrus. All rights reserved. Built with open-source intelligence.</div>
-      <div class="fb-socials">
-        <a class="fb-social" href="#" title="LinkedIn">in</a>
-        <a class="fb-social" href="#" title="X">𝕏</a>
-        <a class="fb-social" href="#" title="GitHub">gh</a>
-        <a class="fb-social" href="mailto:info@ariprus.com" title="Email">@</a>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- ═══════ PROPOSAL & ROI ════════════════════════════════════ -->
+<div class="view" id="view-proposal">
+<div class="view-inner">
+<!-- Cover -->
+<div class="prop-cover mb5">
+<div class="prop-badge">💨 Proposal · SteamBytes RFP Response · April 2026</div>
+<h1 class="prop-h1">SteamBytes Open-Source<br/><span>Platform Migration</span></h1>
+<p class="prop-sub">A complete technical proposal to migrate the SteamBytes platform from PTC ThingWorx to a fully open-source, IP-sovereign stack — delivering superior dashboard intelligence, HAZOP safety logic, and a clear AI/ML roadmap for Mechmar's 50-year industrial legacy.</p>
+<div class="prop-by">
+<span>Prepared by: <strong>AriPrus Digicon Pvt.Ltd</strong></span>
+<span>For: <strong>SteamBytes / Mechmar Group</strong></span>
+<span>Contact: <strong>nazmus@steambytes.com</strong></span>
+<span>RFP Ref: <strong>SB-RFP-2026-OSS</strong></span>
+</div>
+</div>
 
-<div class="toast" id="toast"></div>
+<!-- Why Us -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Why AriPrus</div>
+<div class="sect-h">Our Differentiated Value</div>
+</div>
+<div class="why-cards mb5">
+<div class="why-card">
+<div class="wc-icon">🏭</div>
+<div class="wc-title">Industrial IoT Specialists</div>
+<div class="wc-body">8+ years deploying open-source IIoT platforms for manufacturing, chemical processing and utilities. We understand PLCs, Modbus, Node-RED and industrial data pipelines natively — not as IT generalists.</div>
+</div>
+<div class="why-card">
+<div class="wc-icon">🤖</div>
+<div class="wc-title">Data Science at Industrial Scale</div>
+<div class="wc-body">In-house data science team with published work on combustion efficiency ML models. We have existing model libraries for boiler O₂ optimisation and thermal anomaly detection — not starting from zero.</div>
+</div>
+<div class="why-card">
+<div class="wc-icon">🔓</div>
+<div class="wc-title">True IP Sovereignty</div>
+<div class="wc-body">100% open-source stack — no ThingWorx, One-time license fees, no vendor lock-in.</div>
+</div>
+<div class="why-card">
+<div class="wc-icon">📡</div>
+<div class="wc-title">Zero-Touch Migration</div>
+<div class="wc-body">Sensors, Advantech gateway and Node-RED remain 100% unchanged. We redirect the output node remotely — no site visits required for connectivity. Your 3 Malaysian sites are live in weeks, not months.</div>
+</div>
+<div class="why-card">
+<div class="wc-icon">🇲🇾</div>
+<div class="wc-title">Remote Support</div>
+<div class="wc-body"> Remote support for the pilot customer included in Phase 1. Business hours + emergency response SLA available.</div>
+</div>
+<div class="why-card">
+<div class="wc-icon">⚡</div>
+<div class="wc-title">Highest-Weighted: Dashboard</div>
+<div class="wc-body">We take the RFP's highest-weighted criterion seriously. This demo is our answer — a production-grade dashboard that exceeds ThingWorx visualisation with fleet intelligence, interactive trend analysis and real-time HAZOP status.</div>
+</div>
+</div>
+
+<!-- Tech Stack -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Architecture</div>
+<div class="sect-h">Proposed Open-Source Stack</div>
+<div class="sect-sub">Replacing ThingWorx entirely. </div>
+</div>
+<div class="tech-stack mb5">
+<div class="ts-item ts-oss"><div class="ts-icon">🗄</div><div><div class="ts-name">TimescaleDB</div><div class="ts-desc">Time-series PostgreSQL — replaces ThingWorx database. Hypertables optimised for sensor data at scale.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">📊</div><div><div class="ts-name">Grafana OSS</div><div class="ts-desc">Production-grade dashboard & alerting. Connects directly to TimescaleDB. Replaces ThingWorx UI.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">🔁</div><div><div class="ts-name">Apache Kafka / MQTT Broker</div><div class="ts-desc">Receives telemetry from Node-RED. High-throughput message bus for 16 sensor streams per site.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">⚙</div><div><div class="ts-name">Apache Superset</div><div class="ts-desc">Self-service analytics and reporting layer. Exportable digital logbooks replacing manual records.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">🛡</div><div><div class="ts-name">Node-RED + Nodered-contrib-rules</div><div class="ts-desc">HAZOP safety logic implemented as Node-RED rule flows — Email/SMS PIC notification retained.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">🤖</div><div><div class="ts-name">MLflow + scikit-learn + Prophet</div><div class="ts-desc">AI/ML model training, versioning and serving. Combustion optimisation and predictive maintenance.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">☁</div><div><div class="ts-name">Docker Compose on existing VPS</div><div class="ts-desc">All services containerised. Runs on existing Mechmar cloud server. No new infrastructure cost.</div></div></div>
+<div class="ts-item ts-oss"><div class="ts-icon">🔐</div><div><div class="ts-name">Keycloak (SSO)</div><div class="ts-desc">Role-based access for operators, managers and admins. Replaces ThingWorx user management.</div></div></div>
+</div>
+
+<!-- Team -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Delivery Team</div>
+<div class="sect-h">Team Structure</div>
+</div>
+<div class="team-grid mb5">
+<div class="team-card">
+<div class="team-avatar ta-pm">👤</div>
+<div class="team-name">Project Manager</div>
+<div class="team-role">ENGAGEMENT LEAD</div>
+<div class="team-skills">PMP certified · IIoT project delivery · Client relationship · Malaysia-based · 8yr exp</div>
+</div>
+<div class="team-card">
+<div class="team-avatar ta-arch">👤</div>
+<div class="team-name">IoT Platform Architect</div>
+<div class="team-role">TECHNICAL LEAD</div>
+<div class="team-skills">TimescaleDB · Grafana · Kafka · Node-RED · ThingWorx migration specialist · 6yr exp</div>
+</div>
+<div class="team-card">
+<div class="team-avatar ta-dev">👤</div>
+<div class="team-name">Full-Stack Developer</div>
+<div class="team-role">DASHBOARD & INTEGRATION</div>
+<div class="team-skills">React / Vue · REST API · Node-RED flows · Industrial dashboard UI · 5yr exp</div>
+</div>
+<div class="team-card">
+<div class="team-avatar ta-ai">👤</div>
+<div class="team-name">Data Scientist</div>
+<div class="team-role">AI/ML LEAD</div>
+<div class="team-skills">Python · scikit-learn · XGBoost · Prophet · Industrial ML · Combustion efficiency models · 4yr exp</div>
+</div>
+</div>
+
+<!-- Milestones -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Project Timeline</div>
+<div class="sect-h">Development Milestones</div>
+<div class="sect-sub">16-week primary delivery · AI/ML roadmap continues in Phase 2</div>
+</div>
+<div class="milestone-list mb5">
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:var(--steam)"></div><div class="ms-connector"></div></div>
+<div class="ms-body">
+<div class="ms-week">WEEKS 1–2</div>
+<div class="ms-title">Kickoff & Architecture</div>
+<div class="ms-items">NDA signed · Existing ThingWorx data schema documented · Open-source stack deployed on Mechmar VPS · TimescaleDB schema designed for 16 sensors · Node-RED connectivity plan reviewed</div>
+</div>
+</div>
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:var(--steam)"></div><div class="ms-connector"></div></div>
+<div class="ms-body">
+<div class="ms-week">WEEKS 3–5</div>
+<div class="ms-title">M1: Platform Live + Node-RED Integration</div>
+<div class="ms-items">TimescaleDB live · Node-RED output node updated remotely to MQTT/REST · All 16 sensor streams ingested · SSL/TLS configured · First live data visible in Grafana · Deliverable: Live telemetry feed from Site 1 (wilmar)</div>
+</div>
+</div>
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:var(--steam)"></div><div class="ms-connector"></div></div>
+<div class="ms-body">
+<div class="ms-week">WEEKS 6–10</div>
+<div class="ms-title">M2: Full Dashboard — Fleet & Boiler Detail Views</div>
+<div class="ms-items">Grafana dashboards built: Fleet Overview · Boiler Detail (Fuel/Water/Steam/Economiser) · Interactive Trends with multi-parameter overlay · Digital Data Logbook with export · Deliverable: Dashboard live and matching ThingWorx parity</div>
+</div>
+</div>
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:var(--amber)"></div><div class="ms-connector"></div></div>
+<div class="ms-body">
+<div class="ms-week">WEEKS 11–13</div>
+<div class="ms-title">M3: HAZOP Safety Logic + Alerting</div>
+<div class="ms-items">All HAZOP rules ported from ThingWorx to Node-RED rule engine · Email/SMS gateway connected · Alarm management dashboard · PIC notification tested for all 3 sites · Deliverable: Safety logic parity confirmed by Mechmar team</div>
+</div>
+</div>
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:var(--green)"></div><div class="ms-connector"></div></div>
+<div class="ms-body">
+<div class="ms-week">WEEKS 14–16</div>
+<div class="ms-title">M4: UAT + 3 Site Deployment + Handover</div>
+<div class="ms-items">Sites 2 & 3 connected (KL + Penang) · Full user acceptance testing · On-site training for operators at all 3 sites · Documentation delivered · ThingWorx decommissioned · Deliverable: Full production sign-off</div>
+</div>
+</div>
+<div class="ms">
+<div class="ms-line"><div class="ms-dot" style="border-color:#A78BFA)"></div></div>
+<div class="ms-body">
+<div class="ms-week">MONTHS 5–18</div>
+<div class="ms-title">Phase 2: AI/ML Delivery (Roadmap)</div>
+<div class="ms-items">Combustion efficiency ML model · Predictive maintenance alerts · Steam demand forecasting · MLflow model registry · Full Phase 2 scoped and priced separately post Phase 1 delivery</div>
+</div>
+</div>
+</div>
+
+<!-- Commercials -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Commercial Terms</div>
+<div class="sect-h">Pricing & Cost Breakdown</div>
+<div class="sect-sub">All prices in Malaysian Ringgit (MYR) · Subject to final scope confirmation</div>
+</div>
+<div style="overflow-x:auto;margin-bottom:20px;border:1px solid var(--border);border-radius:12px">
+<table class="cost-table">
+<thead><tr><th>#</th><th>Line Item</th><th>Description</th><th>Cost (MYR)</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Platform Configuration</td><td>TimescaleDB · Grafana · Kafka setup on existing VPS · SSL/TLS · Node-RED integration</td><td class="cost-val">RM 30,000</td><td>One-time</td></tr>
+<tr><td>2</td><td>Dashboard Development</td><td>Fleet Overview · Boiler Detail · Trends · Data Logbook · Full UI exceeding ThingWorx parity</td><td class="cost-val">RM 50,000</td><td>One-time</td></tr>
+<tr><td>3</td><td>HAZOP Safety Logic Port</td><td>All existing HAZOP rules migrated · Email/SMS alerting · Alarm management dashboard</td><td class="cost-val">RM 30,000</td><td>One-time</td></tr>
+<tr><td>4</td><td>3-Site Deployment & Training</td><td>Remote Node-RED update + on-site training at wilmar, Nestle KL, IOI Penang (travel included)</td><td class="cost-val">RM 40,000</td><td>One-time</td></tr>
+<tr><td>5</td><td>AI/ML Phase 1 Roadmap</td><td>Data readiness · Baseline efficiency model · Anomaly detection · MLflow setup</td><td class="cost-val">RM 40,000</td><td>One-time</td></tr>
+<tr><td style="font-weight:700;color:var(--white)" colspan="3">TOTAL ONE-TIME INVESTMENT</td><td class="cost-val" style="font-size:16px">RM 190,000</td><td>Phase 1</td></tr>
+<tr><td>6</td><td>IoT Platform (Cloud/VPS)</td><td>Existing Mechmar server — no new cloud needed.</td><td class="cost-val">RM 0 / month</td><td>Recurring</td></tr>
+<tr><td>7</td><td>Post-Development Support</td><td>12 months: 8hrs/month maintenance · bug fixes · Grafana dashboard updates · Email SLA</td><td class="cost-val">RM 4,500 / month</td><td>Recurring</td></tr>
+<tr><td>8</td><td>AI/ML Phase 2 (Optional)</td><td>Combustion ML model · Predictive maintenance · Steam forecasting (scoped post Phase 1)</td><td class="cost-val">RM 65,000–85,000</td><td>Phase 2</td></tr>
+</tbody>
+</table>
+</div>
+<div style="background:var(--steamBg);border:1px solid var(--borderHi);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;color:var(--t1)">
+<strong style="color:var(--steam)">Payment Terms:</strong> 30% on contract signing · 40% at M2 (Dashboard UAT sign-off) · 30% at M4 (Production go-live). 12-month warranty included. Support contract optional from Month 4.
+</div>
+
+<!-- ROI -->
+<div class="sect-hdr mb4">
+<div class="sect-tag">Business Value</div>
+<div class="sect-h">ROI & Business Case</div>
+<div class="sect-sub">Conservative estimates based on 3 sites. Mechmar fleet of 100+ boilers scales these numbers proportionally.</div>
+</div>
+<div class="roi-cards">
+<div class="roi-card"><div class="roi-card-val" style="color:var(--steam)">RM 0/mo</div><div class="roi-card-lbl">Platform License Cost<br/>(vs ThingWorx)</div></div>
+<div class="roi-card"><div class="roi-card-val" style="color:var(--green)">3–5%</div><div class="roi-card-lbl">Fuel Efficiency Gain<br/>via AI/ML (Phase 2)</div></div>
+<div class="roi-card"><div class="roi-card-val" style="color:var(--amber)">RM 255K+</div><div class="roi-card-lbl">Annual Fuel Saving<br/>3 sites · 3–5% gain</div></div>
+<div class="roi-card"><div class="roi-card-val" style="color:var(--orange)">< 8 months</div><div class="roi-card-lbl">Full ROI Payback<br/>Phase 1 + Phase 2</div></div>
+</div>
+<div class="card mb5">
+<div class="card-hdr"><div class="card-title">5-Year TCO: ThingWorx vs AriPrus Open-Source Stack</div></div>
+<div class="card-body" style="padding-top:8px"><canvas id="tcoChart" height="220"></canvas></div>
+</div>
+
+<!-- CTA -->
+<div style="background:linear-gradient(135deg,var(--bg3),var(--bg2));border:1px solid var(--borderHi);border-radius:16px;padding:36px;text-align:center">
+<div style="font-size:28px;margin-bottom:12px">💨</div>
+<div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:700;color:var(--white);margin-bottom:8px">Ready to transform SteamBytes?</div>
+<p style="font-size:14px;color:var(--t2);max-width:520px;margin:0 auto 20px;line-height:1.65">This demo represents our technical answer to SteamBytes' highest-weighted criterion — dashboard excellence. We are ready to begin Week 1 activities within 5 days of contract execution.</p>
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+
+
+</div>
+<div style="margin-top:20px;font-size:12px;color:var(--t3)">AriPrus · info@ariprus.com · ariprus.com</div>
+</div>
+</div>
+</div>
+
+<div class="toast-el" id="toast"></div>
 
 <script>
 'use strict';
+const $ = id => document.getElementById(id);
+const pad = n => String(n).padStart(2,'0');
+const rand = (a,b) => a + Math.random()*(b-a);
+const randInt = (a,b) => Math.floor(rand(a,b+1));
+let charts={}, tick=0;
+const MONTHS=['Oct','Nov','Dec','Jan','Feb','Mar','Apr'];
 
-// ── Counter animation ──────────────────────────────────────────────
-function animateCounter(el, target, suffix='', duration=2000, delay=0){
-  setTimeout(()=>{
-    const start=performance.now();
-    const step=t=>{
-      const progress=Math.min((t-start)/duration,1);
-      const ease=1-Math.pow(1-progress,3);
-      const current=Math.round(ease*target);
-      el.textContent=current+suffix;
-      if(progress<1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  },delay);
+// ── CLOCK ──────────────────────────────────────────────────────
+setInterval(()=>{
+const d=new Date();
+$('navClock').textContent=`${['SUN','MON','TUE','WED','THU','FRI','SAT'][d.getDay()]} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][d.getMonth()]} ${d.getDate()} ${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+},1000);
+
+// ── VIEW SWITCHER ──────────────────────────────────────────────
+function showView(v){
+document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+$('view-'+v).classList.add('active');
+document.querySelectorAll('.nav-tab').forEach(el=>el.classList.remove('active'));
+const t=document.querySelector(`[data-v="${v}"]`);
+if(t) t.classList.add('active');
+window.scrollTo({top:0,behavior:'smooth'});
+if(v==='trends' && !charts.trendsChart) initTrendsCharts();
+if(v==='proposal' && !charts.tcoChart) initProposalCharts();
 }
 
-// ── Ticker sim ─────────────────────────────────────────────────────
-function rand(a,b){return a+Math.random()*(b-a)}
-setInterval(()=>{
-  const eff=document.getElementById('t-eff');
-  const bat=document.getElementById('t-batches');
-  if(eff) eff.textContent=(84+rand(0,4)).toFixed(1)+'%';
-}, 4000);
+// ── BOILER DATA ────────────────────────────────────────────────
+const BOILERS=[
+{name:'JH-PMD-81723',site:'wilmar',loc:'Johor Bahru',model:'MB7000/250',serial:'MB2277',
+cap:'70,000 PPH',press:'17.24 barG',eff:86,status:'online',
+fuel:{flow:21,o2:2,co:5,total:334527},
+water:{flow:5.734,level:66.2,temp:118.9,total:7113},
+steam:{flow:1.322,pressure:5.8,total:693},
+eco:{gasOut:138,gasIn:242.2,waterIn:85.5,waterOut:116.2},
+alarms:[{name:'Excess Steam Pressure',active:false},{name:'Boiler 1st Low Level Water',active:false},{name:'Boiler 2nd Low Level Water',active:false}],
+burnerHrs:'2400:36:55'},
+{name:'KL-PMD-62411',site:'Nestle Malaysia',loc:'Kuala Lumpur',model:'MB5000/180',serial:'MB1944',
+cap:'50,000 PPH',press:'15.0 barG',eff:79,status:'warning',
+fuel:{flow:18,o2:4.8,co:12,total:298440},
+water:{flow:4.2,level:58.1,temp:112.4,total:5820},
+steam:{flow:0.98,pressure:4.9,total:512},
+eco:{gasOut:142,gasIn:236.1,waterIn:82.3,waterOut:112.1},
+alarms:[{name:'High CO Level',active:true},{name:'Low Water Level',active:false},{name:'Excess Steam Pressure',active:false}],
+burnerHrs:'1820:12:44'},
+{name:'PG-PMD-44199',site:'IOI Group',loc:'Penang',model:'MB3500/120',serial:'MB1622',
+cap:'35,000 PPH',press:'12.0 barG',eff:91,status:'online',
+fuel:{flow:14,o2:1.8,co:3,total:215660},
+water:{flow:3.1,level:71.4,temp:108.8,total:4210},
+steam:{flow:0.72,pressure:3.8,total:388},
+eco:{gasOut:130,gasIn:228.4,waterIn:81.0,waterOut:109.8},
+alarms:[{name:'Excess Steam Pressure',active:false},{name:'Low Water Level',active:false}],
+burnerHrs:'3100:08:22'},
+];
 
-// ── Floating panel sim ─────────────────────────────────────────────
-let batchPct=68;
-setInterval(()=>{
-  batchPct=Math.min(100,batchPct+0.04);
-  const prog=Math.round(batchPct);
-  const bar=document.getElementById('fp-bar');
-  const progEl=document.getElementById('fp-prog');
-  const temp=document.getElementById('fp-temp');
-  const yld=document.getElementById('fp-yield');
-  const conv=document.getElementById('fp-conv');
-  if(bar){bar.style.width=prog+'%'}
-  if(progEl){progEl.textContent=prog+'%'}
-  if(temp){temp.textContent=(82+(Math.random()-.4)*.6).toFixed(1)+'°C'}
-  if(yld){yld.textContent=(94+(Math.random()-.3)*.15).toFixed(1)+'%'}
-  if(conv){conv.textContent=Math.round(batchPct)+'%'}
-},2000);
-
-// ── Nav active state ───────────────────────────────────────────────
-document.querySelectorAll('.nl').forEach(btn=>{
-  btn.addEventListener('click',function(){
-    document.querySelectorAll('.nl').forEach(b=>b.classList.remove('active'));
-    this.classList.add('active');
-  });
+// ── FLEET VIEW ──────────────────────────────────────────────────
+function buildFleet(){
+const g=$('fleetGrid'); g.innerHTML='';
+BOILERS.forEach((b,i)=>{
+const col=b.eff>=85?'#22C55E':b.eff>=75?'#F59E0B':'#EF4444';
+const circ=2*Math.PI*28; const offset=circ*(1-b.eff/100);
+const alarmCount=b.alarms.filter(a=>a.active).length;
+g.innerHTML+=`<div class="boiler-card ${b.status}" onclick="focusBoiler(${i})">
+<div class="bc-top">
+<div>
+<div class="bc-name">${b.site}</div>
+<div class="bc-model">${b.name} · ${b.loc}</div>
+</div>
+<div class="status-chip sc-${b.status}">${b.status.toUpperCase()}</div>
+</div>
+<div class="bc-eff">
+<div class="eff-ring">
+<svg viewBox="0 0 72 72"><circle cx="36" cy="36" r="28" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="6"/>
+<circle cx="36" cy="36" r="28" fill="none" stroke="${col}" stroke-width="6" stroke-linecap="round"
+stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}" transform="rotate(-90 36 36)"/></svg>
+<div class="eff-center"><div class="eff-val" style="color:${col}">${b.eff}</div><div class="eff-lbl">EFF%</div></div>
+</div>
+<div class="bc-metrics">
+<div class="bc-met"><div class="bm-val col-steam">${b.steam.flow}</div><div class="bm-lbl">Steam t/hr</div></div>
+<div class="bc-met"><div class="bm-val col-water">${b.fuel.o2}</div><div class="bm-lbl">O₂ Level %</div></div>
+<div class="bc-met"><div class="bm-val col-fuel">${b.fuel.flow}</div><div class="bm-lbl">Gas Flow m³/hr</div></div>
+<div class="bc-met"><div class="bm-val col-eco">${b.steam.pressure}</div><div class="bm-lbl">Pressure bar</div></div>
+</div>
+</div>
+<div class="bc-alarms">
+${b.alarms.map(a=>`<div class="alarm-item ${a.active?'active':'clear'}">
+<div class="alarm-dot" style="background:${a.active?'#EF4444':'#3A5A6A'}"></div>${a.name}</div>`).join('')}
+</div>
+</div>`;
 });
 
-// ── Scroll-triggered hero counters ────────────────────────────────
-let countersStarted=false;
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting&&!countersStarted){
-      countersStarted=true;
-      animateCounter(document.getElementById('c-crore'),56,'Cr+',2000,200);
-      animateCounter(document.getElementById('c-eff'),15,'%',1800,400);
-      animateCounter(document.getElementById('c-bat'),2847,'',2200,600);
-      animateCounter(document.getElementById('c-sites'),14,'',1600,800);
-    }
-  });
-},{threshold:.3});
-const heroStats=document.querySelector('.hero-stats');
-if(heroStats) observer.observe(heroStats);
-
-// ── CTA ────────────────────────────────────────────────────────────
-function submitCTA(){
-  const email=document.getElementById('ctaEmail');
-  if(email&&email.value&&email.value.includes('@')){
-    showToast('✓ Request received — we\'ll respond within 4 hours.');
-    email.value='';
-  } else {
-    showToast('Please enter a valid work email address.');
-  }
+// Fleet charts
+const labels=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+if(!charts.fleetEff){
+charts.fleetEff=new Chart($('fleetEffChart'),{type:'line',data:{labels,datasets:[
+{label:'JH-PMD',data:[84,86,83,87,86,85,86],borderColor:'#22C55E',fill:false,tension:.4,pointRadius:2},
+{label:'KL-PMD',data:[81,79,78,80,79,77,79],borderColor:'#F59E0B',fill:false,tension:.4,pointRadius:2},
+{label:'PG-PMD',data:[90,91,89,92,91,90,91],borderColor:'#00C8E8',fill:false,tension:.4,pointRadius:2},
+]},options:cBase({plugins:{legend:{display:true,labels:{color:'#6A96A8',font:{size:10},boxWidth:10}}}})});
+charts.fleetSteam=new Chart($('fleetSteamChart'),{type:'bar',data:{labels,datasets:[
+{label:'JH',data:[1.3,1.28,1.32,1.31,1.32,1.29,1.32],backgroundColor:'rgba(0,200,232,.5)',borderRadius:3},
+{label:'KL',data:[0.98,0.97,0.95,0.99,0.98,0.96,0.98],backgroundColor:'rgba(34,197,94,.5)',borderRadius:3},
+{label:'PG',data:[0.72,0.70,0.73,0.71,0.72,0.71,0.72],backgroundColor:'rgba(245,158,11,.5)',borderRadius:3},
+]},options:cBase({plugins:{legend:{display:true,labels:{color:'#6A96A8',font:{size:10},boxWidth:10}}}})});
 }
 
-// ── Toast ──────────────────────────────────────────────────────────
+$('fleetAlarmSummary').innerHTML=BOILERS.map(b=>{
+const active=b.alarms.filter(a=>a.active);
+return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(0,200,232,.06);font-size:12px">
+<span style="color:var(--t1)">${b.site} — <span style="color:var(--t3)">${b.loc}</span></span>
+<span style="${active.length?'color:var(--red)':'color:var(--green)'}">${active.length?active.length+' ACTIVE':'✓ ALL CLEAR'}</span>
+</div>`;
+}).join('');
+}
+
+function focusBoiler(i){
+$('boilerSelect').value=i;
+showView('detail');
+renderDetail();
+}
+
+// ── BOILER DETAIL ──────────────────────────────────────────────
+function renderDetail(){
+const i=parseInt($('boilerSelect').value); const b=BOILERS[i];
+const col=b.eff>=85?'#22C55E':b.eff>=75?'#F59E0B':'#EF4444';
+const circ=2*Math.PI*48; const offset=circ*(1-b.eff/100);
+
+$('boilerInfoPanel').innerHTML=`
+<div class="bi-name">${b.site}</div>
+<div class="bi-row"><span class="k">Boiler Model</span><span class="v">${b.model}</span></div>
+<div class="bi-row"><span class="k">Serial</span><span class="v">${b.serial}</span></div>
+<div class="bi-row"><span class="k">Rated Capacity</span><span class="v">${b.cap}</span></div>
+<div class="bi-row"><span class="k">Rated Pressure</span><span class="v">${b.press}</span></div>
+<div class="bi-row"><span class="k">Location</span><span class="v">${b.loc}</span></div>
+<div class="eff-gauge-big">
+<div class="eff-ring-big">
+<svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,.07)" stroke-width="8"/>
+<circle cx="50" cy="50" r="42" fill="none" stroke="${col}" stroke-width="8" stroke-linecap="round"
+stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${offset.toFixed(1)}" transform="rotate(-90 50 50)"/></svg>
+<div class="ec"><div class="ev" style="color:${col}">${b.eff}%</div><div class="el">Efficiency</div></div>
+</div>
+</div>
+<div class="burner-hrs"><div class="bh-val">${b.burnerHrs}</div><div class="bh-lbl">Burner Running Hours</div></div>
+<div class="status-normal">● ${b.status==='warning'?'WARNING — Check Alarms':'Normal'}</div>`;
+
+$('detailAlarmPanel').innerHTML=`<div class="ap-hdr"><div class="ap-title">⚠ Alarm Status</div><div class="badge badge-live">LIVE</div></div>
+<div class="alarm-list">${b.alarms.map(a=>`
+<div class="alarm-row">
+<div class="a-indicator ${a.active?'a-active':'a-clear'}"></div>
+<span class="a-name">${a.name}</span>
+<span class="a-level ${a.active?'al-crit':'al-warn'}">${a.active?'ACTIVE':'CLEAR'}</span>
+<span class="a-time">${a.active?'03:42':'--:--'}</span>
+</div>`).join('')}</div>`;
+
+$('sensorGroupsPanel').innerHTML=`
+<div class="sg sg-fuel">
+<div class="sg-hdr"><div class="sg-icon">🔥</div><div class="sg-name">FUEL</div></div>
+<div class="sg-body">
+<div class="metric-box"><div class="mb-val col-fuel">${b.fuel.flow}</div><div class="mb-unit">m³/hr</div><div class="mb-lbl">Flow Rate</div></div>
+<div class="metric-box"><div class="mb-val col-fuel">${b.fuel.o2}</div><div class="mb-unit">%</div><div class="mb-lbl">O₂ Level</div></div>
+<div class="metric-box"><div class="mb-val col-fuel">${b.fuel.co}</div><div class="mb-unit">ppm</div><div class="mb-lbl">CO Level</div></div>
+<div class="metric-box"><div class="mb-val col-fuel">${b.fuel.total.toLocaleString()}</div><div class="mb-unit">m³</div><div class="mb-lbl">Totalizer</div></div>
+</div>
+</div>
+<div class="sg sg-water">
+<div class="sg-hdr"><div class="sg-icon">💧</div><div class="sg-name">WATER</div></div>
+<div class="sg-body">
+<div class="metric-box"><div class="mb-val col-water">${b.water.flow}</div><div class="mb-unit">ton/hr</div><div class="mb-lbl">Flow Rate</div></div>
+<div class="metric-box"><div class="mb-val col-water">${b.water.level}</div><div class="mb-unit">%</div><div class="mb-lbl">Water Level</div></div>
+<div class="metric-box"><div class="mb-val col-water">${b.water.temp}</div><div class="mb-unit">°C</div><div class="mb-lbl">Temperature</div></div>
+<div class="metric-box"><div class="mb-val col-water">${b.water.total.toLocaleString()}</div><div class="mb-unit">ton</div><div class="mb-lbl">Totalizer</div></div>
+</div>
+</div>
+<div class="sg sg-steam">
+<div class="sg-hdr"><div class="sg-icon">♨️</div><div class="sg-name">STEAM</div></div>
+<div class="sg-body">
+<div class="metric-box"><div class="mb-val col-steam">${b.steam.flow}</div><div class="mb-unit">ton/hr</div><div class="mb-lbl">Flow Rate</div></div>
+<div class="metric-box"><div class="mb-val col-steam">${b.steam.pressure}</div><div class="mb-unit">bar</div><div class="mb-lbl">Pressure</div></div>
+<div class="metric-box"><div class="mb-val col-steam">${b.steam.total}</div><div class="mb-unit">ton</div><div class="mb-lbl">Totalizer</div></div>
+<div class="metric-box"><div class="mb-val col-steam">${b.eff}</div><div class="mb-unit">%</div><div class="mb-lbl">Efficiency</div></div>
+</div>
+</div>
+<div class="sg sg-eco">
+<div class="sg-hdr"><div class="sg-icon">🌡</div><div class="sg-name">ECONOMISER</div></div>
+<div class="sg-body">
+<div class="metric-box"><div class="mb-val col-eco">${b.eco.gasOut}</div><div class="mb-unit">°C</div><div class="mb-lbl">Gas Out</div></div>
+<div class="metric-box"><div class="mb-val col-eco">${b.eco.gasIn}</div><div class="mb-unit">°C</div><div class="mb-lbl">Gas In</div></div>
+<div class="metric-box"><div class="mb-val col-eco">${b.eco.waterIn}</div><div class="mb-unit">°C</div><div class="mb-lbl">Water In</div></div>
+<div class="metric-box"><div class="mb-val col-eco">${b.eco.waterOut}</div><div class="mb-unit">°C</div><div class="mb-lbl">Water Out</div></div>
+</div>
+</div>`;
+
+// Charts
+const pts=60; const tlbl=Array.from({length:pts},(_,i)=>`${pad(Math.floor((pts-i)*2/60))}:${pad((pts-i)*2%60)}`).reverse();
+const pressData=Array.from({length:pts},()=>+(b.steam.pressure+(rand(-.15,.15))).toFixed(2));
+const o2Data=Array.from({length:pts},()=>+(b.fuel.o2+(rand(-.3,.3))).toFixed(1));
+const fuelData=Array.from({length:pts},()=>+(b.fuel.flow+(rand(-1,1))).toFixed(0));
+
+if(charts.detailPress) charts.detailPress.destroy();
+charts.detailPress=new Chart($('detailPressChart'),{type:'line',data:{labels:tlbl,datasets:[
+{label:'Steam Pressure (bar)',data:pressData,borderColor:'#A78BFA',backgroundColor:'rgba(167,139,250,.07)',fill:true,tension:.4,borderWidth:2,pointRadius:0}]},
+options:cBase()});
+
+if(charts.detailO2) charts.detailO2.destroy();
+charts.detailO2=new Chart($('detailO2Chart'),{type:'line',data:{labels:tlbl,datasets:[
+{label:'O₂ Level (%)',data:o2Data,borderColor:'#00C8E8',borderWidth:2,fill:false,tension:.4,pointRadius:0,yAxisID:'y'},
+{label:'Fuel Flow (m³/hr)',data:fuelData,borderColor:'#FF6B2B',borderWidth:1.5,fill:false,tension:.4,pointRadius:0,yAxisID:'y1',borderDash:[4,3]},
+]},options:{...cBase({plugins:{legend:{display:true,labels:{color:'#6A96A8',font:{size:10},boxWidth:10}}}}),
+scales:{...cBase().scales,y1:{position:'right',grid:{drawOnChartArea:false},ticks:{color:'#3A5A6A',font:{family:'JetBrains Mono',size:9}}}}}});
+}
+
+// ── TRENDS CHARTS ──────────────────────────────────────────────
+const PARAM_CONFIGS=[
+{label:'Gas Flow Rate (m³/hr)',color:'#FF6B2B',range:[18,24]},
+{label:'O₂ Level (%)',color:'#00C8E8',range:[1.5,4]},
+{label:'Water Flow (ton/hr)',color:'#38BDF8',range:[4.5,6.2]},
+{label:'Steam Pressure (bar)',color:'#A78BFA',range:[5.2,6.2]},
+{label:'Steam Flow (ton/hr)',color:'#22C55E',range:[1.1,1.5]},
+{label:'Gas Outlet Temp (°C)',color:'#F59E0B',range:[130,150]},
+];
+
+function buildTrendToggles(){
+const wrap=document.createElement('div');
+wrap.style.cssText='display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px';
+PARAM_CONFIGS.forEach((p,i)=>{
+const t=document.createElement('div');
+t.className='param-toggle on';
+t.style.color=p.color;
+t.innerHTML=`<div class="pt-dot" style="background:${p.color}"></div><span>${p.label.split(' ')[0]} ${p.label.split(' ')[1]||''}</span>`;
+t.onclick=()=>{
+const on=t.classList.toggle('on');
+if(charts.trendsChart){ charts.trendsChart.data.datasets[i].hidden=!on; charts.trendsChart.update(); }
+};
+wrap.appendChild(t);
+});
+$('paramToggles').replaceWith(wrap);
+}
+
+function initTrendsCharts(){
+buildTrendToggles();
+const pts=48; const lbl=Array.from({length:pts},(_,i)=>`${pad(i)}:00`);
+charts.trendsChart=new Chart($('trendsChart'),{type:'line',data:{labels:lbl,datasets:PARAM_CONFIGS.map(p=>({
+label:p.label,
+data:Array.from({length:pts},()=>+(rand(p.range[0],p.range[1])).toFixed(2)),
+borderColor:p.color,backgroundColor:'transparent',tension:.4,borderWidth:1.8,pointRadius:0,
+}))},options:{...cBase({plugins:{legend:{display:true,labels:{color:'#6A96A8',font:{size:10},boxWidth:8}}}})}});
+
+const rpts=30;
+charts.corrChart=new Chart($('corrChart'),{type:'scatter',data:{datasets:[{
+label:'Eff vs Fuel',
+data:Array.from({length:rpts},()=>({x:+(rand(18,26)).toFixed(1),y:+(rand(78,92)).toFixed(1)})),
+backgroundColor:'rgba(0,200,232,.6)',pointRadius:5,
+}]},options:cBase({scales:{x:{...cBase().scales.x,title:{display:true,text:'Fuel Flow (m³/hr)',color:'#3A5A6A',font:{size:10}}},y:{...cBase().scales.y,title:{display:true,text:'Efficiency (%)',color:'#3A5A6A',font:{size:10}}}}})});
+
+charts.dailySteam=new Chart($('dailySteamChart'),{type:'bar',data:{labels:['12-Feb','13-Feb','14-Feb','15-Feb','16-Feb','17-Feb','18-Feb'],
+datasets:[{data:[32.1,31.8,33.2,30.9,32.5,31.2,32.8],backgroundColor:'rgba(0,200,232,.55)',borderRadius:4}]},
+options:cBase()});
+}
+
+// ── DATA TABLE ──────────────────────────────────────────────────
+function buildDataTable(){
+const headers=['Time','Gas Flow\n(m³/hr)','Comb\nO₂ (%)','Comb\nCO (ppm)','Comb Monoxi\n(ppm)','Water Flow\n(kg/hr)','Water\nLevel %','Steam Flow\n(kg/hr)','Steam\nPress (bar)','Eco Gas\nOut (°C)','Eco Gas\nIn (°C)','Eco Water\nIn (°C)','Eco Water\nOut (°C)','Eff\n(%)'];
+const rows=[];
+for(let i=1;i<=20;i++){
+const eff=+(rand(78,93)).toFixed(1);
+rows.push([`2026-02-12 ${pad(i)}:00`,+(rand(20,36)).toFixed(2),+(rand(2,6)).toFixed(2),+(rand(1.5,8)).toFixed(2),+(rand(1000,8000)).toFixed(0),+(rand(580,670)).toFixed(2),+(rand(60,70)).toFixed(2),+(rand(600,2000)).toFixed(0),+(rand(5.0,8.5)).toFixed(2),+(rand(235,250)).toFixed(2),+(rand(130,145)).toFixed(2),+(rand(82,88)).toFixed(2),+(rand(110,130)).toFixed(2),eff]);
+}
+$('dataTable').innerHTML=`<thead><tr>${headers.map(h=>`<th>${h.replace('\n','<br/>')}</th>`).join('')}</tr></thead><tbody>
+${rows.map(r=>`<tr>${r.map((c,i)=>i===13?`<td class="eff-cell ${parseFloat(c)>=88?'eff-hi':parseFloat(c)>=80?'eff-mid':'eff-lo'}">${c}</td>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+
+// ── HAZOP RULES ────────────────────────────────────────────────
+function buildHazop(){
+const rules=[
+{name:'Excess Steam Pressure',cond:'steam.pressure > 7.5 bar',action:'→ Email PIC + SMS Alert + Log Event',level:'CRITICAL',enabled:true,status:'ok'},
+{name:'Boiler 1st Low Level Water',cond:'water.level < 30%',action:'→ Email PIC + Burner Auto-Trip',level:'CRITICAL',enabled:true,status:'ok'},
+{name:'Boiler 2nd Low Level Water',cond:'water.level < 15%',action:'→ SMS PIC + Emergency Shutdown',level:'CRITICAL',enabled:true,status:'active'},
+{name:'High CO Level',cond:'fuel.co > 50 ppm for 5min',action:'→ Email PIC + Warning Dashboard',level:'WARNING',enabled:true,status:'ok'},
+{name:'Low Oxygen Level',cond:'fuel.o2 < 1.0%',action:'→ Email PIC + Adjust Air Damper',level:'WARNING',enabled:true,status:'ok'},
+{name:'High Economiser Temp',cond:'eco.gasOut > 260°C',action:'→ Email PIC + Log Deviation',level:'WARNING',enabled:true,status:'ok'},
+];
+$('hazopRules').innerHTML=rules.map(r=>`
+<div class="hazop-rule">
+<div class="hr-header">
+<div class="hr-name">${r.name}</div>
+<div class="hr-enabled hre-${r.enabled?'on':'off'}">${r.enabled?'ENABLED':'DISABLED'}</div>
+</div>
+<div class="hr-body">
+<div class="hr-condition">${r.cond}</div>
+<div class="hr-action">📧 ${r.action}</div>
+<div class="hr-trigger">
+<span style="font-size:11px;color:var(--t3)">Level: <span style="color:${r.level==='CRITICAL'?'#EF4444':'#F59E0B'}">${r.level}</span></span>
+<div class="hr-status ${r.status==='active'?'hrs-active':'hrs-ok'}">${r.status==='active'?'⚠ ACTIVE':'✓ OK'}</div>
+</div>
+</div>
+</div>`).join('');
+
+$('safetyAlarmPanel').innerHTML=`<div class="alarm-list">${BOILERS.flatMap(b=>b.alarms.filter(a=>a.active).map(a=>`
+<div class="alarm-row">
+<div class="a-indicator a-active"></div>
+<div class="a-name"><strong>${b.site}</strong> — ${a.name}</div>
+<div class="a-level al-crit">ACTIVE</div>
+<div class="a-time">03:42</div>
+</div>`)).join('')||'<div style="padding:12px;font-size:12px;color:var(--green)">✓ No active alarms</div>'}</div>`;
+
+const events=[
+{cls:'alert',t:'03:42',m:'KL-PMD-62411 · High CO Level ACTIVE — SMS sent to Mohd Razif (PIC)'},
+{cls:'warn',t:'03:38',m:'KL-PMD-62411 · CO Level rising: 8 ppm → 14 ppm — Monitoring'},
+{cls:'ok',t:'02:15',m:'JH-PMD-81723 · Excess Steam Pressure CLEARED — All systems normal'},
+{cls:'info',t:'01:58',m:'JH-PMD-81723 · Excess Steam Pressure ACTIVE — Email sent to PIC'},
+{cls:'ok',t:'00:30',m:'PG-PMD-44199 · Daily HAZOP self-check passed — 6/6 rules operational'},
+{cls:'info',t:'23:45',m:'All sites · Daily boiler log snapshot taken — Data archived'},
+];
+$('hazopEventLog').innerHTML=events.map(e=>`<div class="el-row ${e.cls}"><div class="el-time">${e.t}</div><div class="el-msg">${e.m}</div></div>`).join('');
+}
+
+// ── PROPOSAL CHARTS ────────────────────────────────────────────
+function initProposalCharts(){
+charts.tcoChart=new Chart($('tcoChart'),{type:'bar',data:{labels:['Year 1','Year 2','Year 3','Year 4','Year 5'],datasets:[
+{label:'ThingWorx (License + Maintenance)',data:[320,340,360,380,400],backgroundColor:'rgba(239,68,68,.55)',borderRadius:4},
+{label:'AriPrus Open-Source Stack',data:[195,42,42,42,42],backgroundColor:'rgba(0,200,232,.55)',borderRadius:4},
+]},options:{...cBase({plugins:{legend:{display:true,labels:{color:'#6A96A8',font:{size:11},boxWidth:12}}}}),
+scales:{...cBase().scales,y:{...cBase().scales.y,title:{display:true,text:'Cost (RM \'000)',color:'#3A5A6A',font:{size:10}}}}}});
+}
+
+// ── CHART DEFAULTS ────────────────────────────────────────────
+function cBase(extra={}){
+return{responsive:true,maintainAspectRatio:false,
+plugins:{legend:{display:false},tooltip:{backgroundColor:'#102030',borderColor:'rgba(0,200,232,.25)',borderWidth:1,titleColor:'#E8F4F8',bodyColor:'#6A96A8'},...(extra.plugins||{})},
+scales:{x:{grid:{color:'rgba(0,200,232,.05)'},ticks:{color:'#3A5A6A',font:{family:'JetBrains Mono',size:10}},...(extra.x||{})},
+y:{grid:{color:'rgba(0,200,232,.05)'},ticks:{color:'#3A5A6A',font:{family:'JetBrains Mono',size:10}},...(extra.y||{})}},...extra};
+}
+
+// ── SIMULATION ─────────────────────────────────────────────────
+function startSim(){
+setInterval(()=>{
+tick++;
+BOILERS.forEach(b=>{
+b.fuel.o2=+(b.fuel.o2+(rand(-.05,.05))).toFixed(1);
+b.steam.pressure=+(b.steam.pressure+(rand(-.02,.02))).toFixed(2);
+b.eff=Math.round(Math.max(75,Math.min(95,b.eff+(rand(-.2,.2)))));
+});
+},3000);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
 let tt;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg;t.classList.add('show');
-  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),4200);
+function showToast(m){
+let t=$('toast');if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:20px;right:20px;z-index:600;background:#102030;border:1px solid rgba(0,200,232,.3);border-radius:9px;padding:11px 16px;font-size:13px;color:#00C8E8;box-shadow:0 4px 24px rgba(0,0,0,.5);transform:translateY(120%);transition:transform .3s;max-width:280px;font-family:Barlow,sans-serif';document.body.appendChild(t);}
+t.textContent=m;t.style.transform='translateY(0)';clearTimeout(tt);tt=setTimeout(()=>t.style.transform='translateY(120%)',3800);
 }
 
-// ── Enter key on CTA input ─────────────────────────────────────────
-document.getElementById('ctaEmail')?.addEventListener('keydown',e=>{if(e.key==='Enter')submitCTA()});
-
-// ── Smooth nav scroll for section buttons ─────────────────────────
-document.querySelectorAll('.nl').forEach((btn,i)=>{
-  const sections=['platforms','industries','results','tech'];
-  if(sections[i-1]){
-    btn.addEventListener('click',()=>{
-      document.getElementById(sections[i-1])?.scrollIntoView({behavior:'smooth'});
-    });
-  }
+// ── BOOT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+buildFleet();
+renderDetail();
+buildDataTable();
+buildHazop();
+startSim();
 });
+
+// Lazy range btn clicks
+document.addEventListener('click',e=>{if(e.target.classList.contains('range-btn')){document.querySelectorAll('.range-btn').forEach(b=>b.classList.remove('active'));e.target.classList.add('active');}});
 </script>
 </body>
 </html>
